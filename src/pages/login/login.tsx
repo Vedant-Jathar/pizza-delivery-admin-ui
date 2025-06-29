@@ -15,7 +15,7 @@ function LoginPage() {
         mutationKey: ['login'],
         mutationFn: loginUser,
         onSuccess: async () => {
-            console.log("Login successful");
+            console.log("Login is successful");
         }
     })
 
