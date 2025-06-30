@@ -47,6 +47,8 @@ function LoginPage() {
                 return
             }
             setUser(response.data)
+            console.log("response.data", response.data);
+
         }
     })
 
