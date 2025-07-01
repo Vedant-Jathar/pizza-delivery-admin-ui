@@ -1,26 +1,33 @@
 import { Navigate, NavLink, Outlet, useLocation } from "react-router-dom"
 import { useAuthStore } from "../store"
-import { Layout, Menu, theme, } from "antd"
+import { Avatar, Badge, Dropdown, Flex, Layout, Menu, Space, theme, } from "antd"
 import Sider from "antd/es/layout/Sider"
 import { Content, Footer, Header } from "antd/es/layout/layout"
 import { useState } from "react"
 import Home from "../components/icons/Home"
-import Icon from "@ant-design/icons"
+import Icon, { BellFilled } from "@ant-design/icons"
 import UserIcon from "../components/icons/UserIcon"
 import Logo from "../components/icons/Logo"
+import { logout } from "../http/api"
+import { useMutation } from "@tanstack/react-query"
 
 const Dashboard = () => {
 
     const location = useLocation()
     const pathName = location.pathname
     console.log(pathName);
-    
+
     const [collapsed, setCollapsed] = useState(false)
 
-    const { user } = useAuthStore()
-    if (!user) {
-        return <Navigate to={"/auth/login"} />
-    }
+    const { user, logout: logoutFromStore } = useAuthStore()
+
+    const { mutate: logoutMutate } = useMutation({
+        mutationKey: ["logut"],
+        mutationFn: logout,
+        onSuccess: () => {
+            logoutFromStore()
+        }
+    })
 
     const items = [
         {
@@ -54,6 +61,11 @@ const Dashboard = () => {
         token: { colorBgContainer }
     } = theme.useToken()
 
+    // Note: "return" statements have to be after the hooks so that they dont get skipped
+    if (!user) {
+        return <Navigate to={"/auth/login"} />
+    }
+
     return (
         <>
             <Layout style={{ minHeight: '100vh' }}>
@@ -64,8 +76,28 @@ const Dashboard = () => {
                     <Menu theme="light" defaultSelectedKeys={[pathName]} mode="inline" items={items} />
                 </Sider>
                 <Layout>
-                    <Header style={{ padding: 0, background: colorBgContainer }} />
-                    <Content style={{ margin: '0 16px' }}>
+                    <Header style={{ paddingLeft: "16px", background: colorBgContainer }}>
+                        <Flex gap="middle" align="start" justify="space-between">
+                            <Badge text={user.role === "admin" ? "Admin" : user.tenant?.name} status="success" />
+                            <Space>
+                                <Badge dot={true} >
+                                    <BellFilled />
+                                </Badge>
+                                <Dropdown menu={{
+                                    items: [
+                                        {
+                                            key: "logout",
+                                            label: "Logout",
+                                            onClick: () => logoutMutate()
+                                        }
+                                    ]
+                                }} placement="bottomRight" arrow>
+                                    <Avatar style={{ backgroundColor: '#fde3cf', color: '#f56a00' }}>U</Avatar>
+                                </Dropdown>
+                            </Space>
+                        </Flex>
+                    </Header>
+                    <Content style={{ margin: '24px' }}>
                         <Outlet />
                     </Content>
                     <Footer style={{ textAlign: 'center' }}>

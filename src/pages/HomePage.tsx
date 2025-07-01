@@ -1,8 +1,13 @@
+import Title from "antd/es/typography/Title"
+import { useAuthStore } from "../store"
+
 function HomePage() {
+
+  const { user } = useAuthStore()
 
   return (
     <>
-      <h1>Welcome Admin dashboard</h1>
+      <Title style={{ fontSize: "25px" }}>Welcome {user?.firstName}🙂 </Title>
     </>
   )
 }
