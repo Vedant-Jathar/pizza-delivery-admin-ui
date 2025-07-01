@@ -29,33 +29,38 @@ const Dashboard = () => {
         }
     })
 
-    const items = [
-        {
-            key: '/',
-            icon: <Icon component={Home} />,
-            label: <NavLink to="/">Home</NavLink>
-        },
-        {
-            key: '/users',
-            icon: <Icon component={UserIcon} />,
-            label: <NavLink to="/users">Users</NavLink>
-        },
-        {
-            key: '/restaurants',
-            icon: <Icon component={Home} />,
-            label: <NavLink to="/restaurants">Restaurants</NavLink>
-        },
-        {
-            key: '/products',
-            icon: <Icon component={Home} />,
-            label: <NavLink to="/">Products</NavLink>
-        },
-        {
-            key: '/promos',
-            icon: <Icon component={Home} />,
-            label: <NavLink to="/">Promos</NavLink>
-        },
-    ]
+    const getItems = (role: string) => {
+        const baseItems = [
+            {
+                key: '/',
+                icon: <Icon component={Home} />,
+                label: <NavLink to="/">Home</NavLink>
+            },
+            {
+                key: '/restaurants',
+                icon: <Icon component={Home} />,
+                label: <NavLink to="/restaurants">Restaurants</NavLink>
+            },
+            {
+                key: '/products',
+                icon: <Icon component={Home} />,
+                label: <NavLink to="/">Products</NavLink>
+            },
+            {
+                key: '/promos',
+                icon: <Icon component={Home} />,
+                label: <NavLink to="/">Promos</NavLink>
+            },
+        ]
+        if (role === "admin") {
+            baseItems.splice(1, 0, {
+                key: '/users',
+                icon: <Icon component={UserIcon} />,
+                label: <NavLink to="/users">Users</NavLink>
+            })
+        }
+        return baseItems
+    }
 
     const {
         token: { colorBgContainer }
@@ -73,7 +78,7 @@ const Dashboard = () => {
                     <div className="demo-logo-vertical" id="logo_on_dashboard">
                         <Logo />
                     </div>
-                    <Menu theme="light" defaultSelectedKeys={[pathName]} mode="inline" items={items} />
+                    <Menu theme="light" defaultSelectedKeys={[pathName]} mode="inline" items={getItems(user?.role)} />
                 </Sider>
                 <Layout>
                     <Header style={{ paddingLeft: "16px", background: colorBgContainer }}>
