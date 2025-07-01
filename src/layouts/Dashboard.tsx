@@ -68,7 +68,7 @@ const Dashboard = () => {
 
     return (
         <>
-            <Layout style={{ minHeight: '100vh' }}>
+            <Layout style={{ minHeight: '100vh', background: colorBgContainer }}>
                 <Sider theme="light" collapsible collapsed={collapsed} onCollapse={(value) => setCollapsed(value)}>
                     <div className="demo-logo-vertical" id="logo_on_dashboard">
                         <Logo />
@@ -105,7 +105,6 @@ const Dashboard = () => {
                     </Footer>
                 </Layout>
             </Layout >
-            <Outlet />
         </>
     )
 }
