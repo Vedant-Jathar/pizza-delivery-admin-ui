@@ -15,7 +15,6 @@ const Dashboard = () => {
 
     const location = useLocation()
     const pathName = location.pathname
-    console.log(pathName);
 
     const [collapsed, setCollapsed] = useState(false)
 
