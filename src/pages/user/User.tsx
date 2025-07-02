@@ -6,7 +6,7 @@ import type { User } from '../../types'
 import { useAuthStore } from "../../store"
 import UserFilter from "./UserFilter"
 import { useState } from "react"
-import { PlusOutlined } from "@ant-design/icons"
+import { PlusOutlined, RightOutlined } from "@ant-design/icons"
 
 const User = () => {
 
@@ -57,14 +57,16 @@ const User = () => {
     return (
         <>
             <Breadcrumb
-                items={[
-                    {
-                        title: <Link to="/">Dashboard</Link>
-                    },
-                    {
-                        title: <Link to="/users">users</Link>
-                    }
-                ]}
+                separator={<RightOutlined />}
+                items={
+                    [
+                        {
+                            title: <Link to="/">Dashboard</Link>
+                        },
+                        {
+                            title: <Link to="/users">Users</Link>
+                        }
+                    ]}
             />
             {isLoading && <div>Loading.....</div>}
             {isError && <div>Error:{error.message}</div>}

@@ -36,27 +36,28 @@ const Dashboard = () => {
                 label: <NavLink to="/">Home</NavLink>
             },
             {
-                key: '/restaurants',
-                icon: <Icon component={Home} />,
-                label: <NavLink to="/restaurants">Restaurants</NavLink>
-            },
-            {
                 key: '/products',
                 icon: <Icon component={Home} />,
-                label: <NavLink to="/">Products</NavLink>
+                label: <NavLink to="/products">Products</NavLink>
             },
             {
                 key: '/promos',
                 icon: <Icon component={Home} />,
-                label: <NavLink to="/">Promos</NavLink>
+                label: <NavLink to="/promos">Promos</NavLink>
             },
         ]
         if (role === "admin") {
-            baseItems.splice(1, 0, {
-                key: '/users',
-                icon: <Icon component={UserIcon} />,
-                label: <NavLink to="/users">Users</NavLink>
-            })
+            baseItems.splice(1, 0,
+                {
+                    key: '/users',
+                    icon: <Icon component={UserIcon} />,
+                    label: <NavLink to="/users">Users</NavLink>
+                },
+                {
+                    key: '/restaurants',
+                    icon: <Icon component={Home} />,
+                    label: <NavLink to="/tenants">Restaurants</NavLink>
+                },)
         }
         return baseItems
     }
@@ -87,15 +88,17 @@ const Dashboard = () => {
                                 <Badge dot={true} >
                                     <BellFilled />
                                 </Badge>
-                                <Dropdown menu={{
-                                    items: [
-                                        {
-                                            key: "logout",
-                                            label: "Logout",
-                                            onClick: () => logoutMutate()
-                                        }
-                                    ]
-                                }} placement="bottomRight" arrow>
+                                <Dropdown
+
+                                    menu={{
+                                        items: [
+                                            {
+                                                key: "logout",
+                                                label: "Logout",
+                                                onClick: () => logoutMutate()
+                                            }
+                                        ]
+                                    }} placement="bottomRight" arrow>
                                     <Avatar style={{ backgroundColor: '#fde3cf', color: '#f56a00' }}>U</Avatar>
                                 </Dropdown>
                             </Space>

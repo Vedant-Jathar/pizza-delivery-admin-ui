@@ -9,7 +9,7 @@ type userFilterProps = {
 const UserFilter = ({ onFilterChange, children }: userFilterProps) => {
     return (
         <>
-            <Card>
+            <Card style={{ margin: "20px 0" }}>
                 <Row>
                     <Col span={15}>
                         <Row gutter={20}>
