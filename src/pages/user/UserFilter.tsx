@@ -14,7 +14,7 @@ const UserFilter = ({ onFilterChange, children }: userFilterProps) => {
                     <Col span={15}>
                         <Row gutter={20}>
                             <Col span={8}>
-                                <Input.Search placeholder="Search" style={{ width: "100%" }} onChange={(e) => onFilterChange("searchFilter", e.target.value)} allowClear={true} />
+                                <Input.Search size="large" placeholder="Search" style={{ width: "100%" }} onChange={(e) => onFilterChange("searchFilter", e.target.value)} allowClear={true} />
                             </Col>
                             <Col span={8}>
                                 <Select style={{ width: "100%" }} placeholder="Select Role" onChange={(selectedValue) => onFilterChange("roleFilter", selectedValue)} allowClear={true}>

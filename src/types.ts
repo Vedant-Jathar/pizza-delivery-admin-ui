@@ -18,6 +18,15 @@ export interface User {
     tenant?: Tenant
 }
 
+export interface CreateUserData {
+    id: number
+    firstName: string
+    lastName: string
+    password: string
+    email: string
+    tenantId: number
+}
+
 export interface Tenant {
     id: number
     name: string
