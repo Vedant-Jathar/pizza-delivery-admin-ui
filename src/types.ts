@@ -3,10 +3,10 @@ export type credentials = {
     password: string
 }
 
-export interface Tenant{
-    id:number
-    name:string
-    address:string
+export interface Tenant {
+    id: number
+    name: string
+    address: string
 }
 
 export interface User {
@@ -15,5 +15,11 @@ export interface User {
     lastName: string
     email: string
     createdAt: number
-    tenant?:Tenant
+    tenant?: Tenant
+}
+
+export interface Tenant {
+    id: number
+    name: string
+    address: string
 }

@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query"
-import { Breadcrumb, Button, Drawer, Space, Table } from "antd"
+import { Breadcrumb, Button, Drawer, Form, Space, Table, theme } from "antd"
 import { Link, Navigate } from "react-router-dom"
 import { getAllUsers } from "../../http/api"
 import type { User } from '../../types'
@@ -7,8 +7,12 @@ import { useAuthStore } from "../../store"
 import UserFilter from "./UserFilter"
 import { useState } from "react"
 import { PlusOutlined, RightOutlined } from "@ant-design/icons"
+import UserForm from './forms/UserForm'
 
 const User = () => {
+    const {
+        token: { colorBgLayout }
+    } = theme.useToken()
 
     const [drawerOpen, setDrawerOpen] = useState(false)
     const { data: users, isLoading, isError, error } = useQuery({
@@ -87,6 +91,7 @@ const User = () => {
             {/* Create user drawer */}
             <Drawer
                 title="Create User"
+                styles={{ body: { backgroundColor: colorBgLayout } }}
                 open={drawerOpen}
                 onClose={() => {
                     setDrawerOpen(false)
@@ -100,8 +105,9 @@ const User = () => {
                     </Space>
                 }
             >
-                <p>Content 1</p>
-                <p>Content 2</p>
+                <Form layout="vertical">
+                    <UserForm />
+                </Form>
             </Drawer>
         </>
     )
