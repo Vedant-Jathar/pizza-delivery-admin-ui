@@ -74,6 +74,7 @@ const UserForm = () => {
                                             message: "Role is requited"
                                         }]}>
                                         <Select
+
                                             allowClear={true}
                                             size="large"
                                             onChange={() => { }}
@@ -96,7 +97,7 @@ const UserForm = () => {
                                             onChange={() => { }}
                                             placeholder="Select Restaurant">
                                             {
-                                                tenants?.data.map((tenant: Tenant) => <Select.Option value={tenant.id}>{tenant.name}</Select.Option>)
+                                                tenants?.data.map((tenant: Tenant) => <Select.Option value={tenant.id} key={tenant.id}>{tenant.name}</Select.Option>)
                                             }
                                         </Select>
                                     </Form.Item>

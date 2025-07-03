@@ -8,8 +8,14 @@ import UserFilter from "./UserFilter"
 import { useState } from "react"
 import { PlusOutlined, RightOutlined } from "@ant-design/icons"
 import UserForm from './forms/UserForm'
+import { PER_PAGE } from "../../constants"
 
 const User = () => {
+
+    const [queryParams, setQueryParams] = useState({
+        currentPage: 1,
+        perPage: PER_PAGE
+    })
 
     const [form] = Form.useForm()
 
@@ -35,9 +41,13 @@ const User = () => {
     } = theme.useToken()
 
     const [drawerOpen, setDrawerOpen] = useState(false)
+
     const { data: users, isLoading, isError, error } = useQuery({
-        queryKey: ["getAllUsers"],
-        queryFn: getAllUsers
+        queryKey: ["getAllUsers", queryParams],
+        queryFn: () => {
+            const queryString = new URLSearchParams(queryParams as unknown as Record<string, string>).toString()
+            return getAllUsers(queryString)
+        }
     })
 
     const userTableColumns = [
@@ -109,7 +119,26 @@ const User = () => {
                 </Button>
             </UserFilter >
 
-            <Table columns={userTableColumns} dataSource={users?.data} rowKey={"id"} />
+            <Table
+                columns={userTableColumns}
+                dataSource={users?.data?.data}
+                rowKey={"id"}
+                pagination={{
+                    current: queryParams.currentPage,
+                    pageSize: PER_PAGE,
+                    total: users?.data?.total,
+                    onChange: (page) => {
+                        setQueryParams((prev) => {
+                            return {
+                                ...prev,
+                                currentPage: page
+                            }
+                        })
+                    }
+                }
+
+                }
+            />
 
             {/* Create user drawer */}
             <Drawer

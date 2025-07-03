@@ -66,7 +66,7 @@ const Tenant = () => {
                     icon={<PlusOutlined />}
                     onClick={() => setDrawerOpen(true)}
                 >
-                    Add Tenant
+                    Add Restaurant
                 </Button>
             </TenantFilter>
 
