@@ -26,7 +26,7 @@ const User = () => {
     })
 
     const [form] = Form.useForm()
-    const [filterForm] = Form.useForm()
+    // const [filterForm] = Form.useForm()
 
     const queryClient = useQueryClient()
 
@@ -134,7 +134,7 @@ const User = () => {
                 {isError && <Typography.Text type="danger">{error?.message}</Typography.Text>}
             </Flex>
 
-            <Form form={filterForm} onFieldsChange={onFiltersFieldChange}>
+            <Form onFieldsChange={onFiltersFieldChange}>
                 <UserFilter >
                     <Button
                         size="large"
@@ -165,9 +165,13 @@ const User = () => {
                             }
                         })
                     }
+                    ,
+                    showTotal: (total: number, range: number[]) => {
+                        return `Showing ${range[0]}-${range[1]} of ${total} items`
+                    }
+                }
                 }
 
-                }
             />
 
             {/* Create user drawer */}
