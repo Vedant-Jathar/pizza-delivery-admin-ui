@@ -1,18 +1,24 @@
 import { keepPreviousData, useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
-import { Breadcrumb, Button, Drawer, Flex, Form, Space, Spin, Table, theme, Typography } from "antd"
+import { Breadcrumb, Button, Drawer, Flex, Form, notification, Space, Spin, Table, theme, Typography } from "antd"
 import { Link, Navigate } from "react-router-dom"
 import { createUser, getAllUsers } from "../../http/api"
-import type { User } from '../../types'
+import type { mappedFields, User } from '../../types'
 import { useAuthStore } from "../../store"
 import UserFilter from "./UserFilter"
-import { useState } from "react"
+import { useMemo, useState } from "react"
 import { LoadingOutlined, PlusOutlined, RightOutlined } from "@ant-design/icons"
 import UserForm from './forms/UserForm'
 import { PER_PAGE } from "../../constants"
 import type { FieldData } from 'rc-field-form/lib/interface';
-
+import { debounce } from "lodash"
 
 const User = () => {
+    // "useMemo" stores the return value of the function you pass into it.
+    const debouncedQUpdate = useMemo(() => {
+        return debounce((value: string) => {
+            setQueryParams((prev) => ({ ...prev, currentPage: 1, q: value }))
+        }, 1000)
+    }, [])
 
     const [queryParams, setQueryParams] = useState({
         currentPage: 1,
@@ -28,6 +34,10 @@ const User = () => {
         mutationKey: ['createUser'],
         mutationFn: createUser,
         onSuccess: () => {
+            notification.success({
+                message: "Success",
+                description: "User created successfully!",
+            });
             queryClient.invalidateQueries({ queryKey: ['getAllUsers'] })
         }
     })
@@ -42,7 +52,12 @@ const User = () => {
     const onFiltersFieldChange = (changedFields: FieldData[]) => {
         const mappedFields = (changedFields.map((item) => ({ [item.name[0]]: item.value }))).reduce((acc, item) => ({ ...acc, ...item }), {})
 
-        setQueryParams((prev) => ({ ...prev, currentPage: 1, ...mappedFields }))
+        if ((mappedFields as mappedFields).q) {
+            debouncedQUpdate((mappedFields as mappedFields).q!)
+        }
+        else {
+            setQueryParams((prev) => ({ ...prev, currentPage: 1, ...mappedFields }))
+        }
     }
 
     const {

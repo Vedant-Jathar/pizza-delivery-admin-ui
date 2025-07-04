@@ -37,3 +37,8 @@ export interface changedFields {
     name: string[],
     value: string
 }
+
+export interface mappedFields {
+    q?: string,
+    role?: string
+}
