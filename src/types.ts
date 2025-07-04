@@ -32,3 +32,8 @@ export interface Tenant {
     name: string
     address: string
 }
+
+export interface changedFields {
+    name: string[],
+    value: string
+}

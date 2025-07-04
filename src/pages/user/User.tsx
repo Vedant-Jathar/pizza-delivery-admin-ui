@@ -1,14 +1,16 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
-import { Breadcrumb, Button, Drawer, Form, Space, Table, theme } from "antd"
+import { keepPreviousData, useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
+import { Breadcrumb, Button, Drawer, Flex, Form, Space, Spin, Table, theme, Typography } from "antd"
 import { Link, Navigate } from "react-router-dom"
 import { createUser, getAllUsers } from "../../http/api"
 import type { User } from '../../types'
 import { useAuthStore } from "../../store"
 import UserFilter from "./UserFilter"
 import { useState } from "react"
-import { PlusOutlined, RightOutlined } from "@ant-design/icons"
+import { LoadingOutlined, PlusOutlined, RightOutlined } from "@ant-design/icons"
 import UserForm from './forms/UserForm'
 import { PER_PAGE } from "../../constants"
+import type { FieldData } from 'rc-field-form/lib/interface';
+
 
 const User = () => {
 
@@ -18,6 +20,7 @@ const User = () => {
     })
 
     const [form] = Form.useForm()
+    const [filterForm] = Form.useForm()
 
     const queryClient = useQueryClient()
 
@@ -36,18 +39,26 @@ const User = () => {
         setDrawerOpen(false)
     }
 
+    const onFiltersFieldChange = (changedFields: FieldData[]) => {
+        const mappedFields = (changedFields.map((item) => ({ [item.name[0]]: item.value }))).reduce((acc, item) => ({ ...acc, ...item }), {})
+
+        setQueryParams((prev) => ({ ...prev, currentPage: 1, ...mappedFields }))
+    }
+
     const {
         token: { colorBgLayout }
     } = theme.useToken()
 
     const [drawerOpen, setDrawerOpen] = useState(false)
 
-    const { data: users, isLoading, isError, error } = useQuery({
+    const { data: users, isFetching, isError, error } = useQuery({
         queryKey: ["getAllUsers", queryParams],
         queryFn: () => {
-            const queryString = new URLSearchParams(queryParams as unknown as Record<string, string>).toString()
+            const filteredQueryParams = Object.fromEntries((Object.entries(queryParams)).filter((item) => item[1]))
+            const queryString = new URLSearchParams(filteredQueryParams as unknown as Record<string, string>).toString()
             return getAllUsers(queryString)
-        }
+        },
+        placeholderData: keepPreviousData
     })
 
     const userTableColumns = [
@@ -90,34 +101,38 @@ const User = () => {
 
     return (
         <>
-            <Breadcrumb
-                separator={<RightOutlined />}
-                items={
-                    [
-                        {
-                            title: <Link to="/">Dashboard</Link>
-                        },
-                        {
-                            title: <Link to="/users">Users</Link>
-                        }
-                    ]}
-            />
-            {isLoading && <div>Loading.....</div>}
-            {isError && <div>Error:{error.message}</div>}
-            <UserFilter onFilterChange={(filterName: string, filterValue: string) => {
-                console.log(filterName + "->", filterValue);
-            }} >
-                <Button
-                    size="large"
-                    icon={<PlusOutlined />}
-                    onClick={() => {
-                        setDrawerOpen(true)
-                    }}
-                    type="primary"
-                >
-                    Add User
-                </Button>
-            </UserFilter >
+            <Flex justify="space-between" style={{ marginBottom: "2U0px" }}>
+                <Breadcrumb
+                    separator={<RightOutlined />}
+                    items={
+                        [
+                            {
+                                title: <Link to="/">Dashboard</Link>
+                            },
+                            {
+                                title: <Link to="/users">Users</Link>
+                            }
+                        ]}
+                />
+                {isFetching && <Spin indicator={<LoadingOutlined style={{ fontSize: 25 }} spin />} />
+                }
+                {isError && <Typography.Text type="danger">{error?.message}</Typography.Text>}
+            </Flex>
+
+            <Form form={filterForm} onFieldsChange={onFiltersFieldChange}>
+                <UserFilter >
+                    <Button
+                        size="large"
+                        icon={<PlusOutlined />}
+                        onClick={() => {
+                            setDrawerOpen(true)
+                        }}
+                        type="primary"
+                    >
+                        Add User
+                    </Button>
+                </UserFilter >
+            </Form>
 
             <Table
                 columns={userTableColumns}
