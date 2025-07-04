@@ -17,7 +17,7 @@ const User = () => {
     const debouncedQUpdate = useMemo(() => {
         return debounce((value: string) => {
             setQueryParams((prev) => ({ ...prev, currentPage: 1, q: value }))
-        }, 1000)
+        }, 500)
     }, [])
 
     const [queryParams, setQueryParams] = useState({
@@ -100,11 +100,11 @@ const User = () => {
             key: 'role'
         },
         {
-            title: "TenantId",
+            title: "Restaurant",
             dataIndex: "tenant",
             key: "tenant",
             render: (text: string, record: User) => {
-                return <div>{record.tenant?.id || "null"}</div>
+                return <div>{record.tenant?.name}</div>
             }
         }
     ]

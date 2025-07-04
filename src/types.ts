@@ -15,7 +15,7 @@ export interface User {
     lastName: string
     email: string
     createdAt: number
-    tenant?: Tenant
+    tenant?: Tenant | null
 }
 
 export interface CreateUserData {
