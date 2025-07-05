@@ -1,14 +1,15 @@
 import { useQuery } from "@tanstack/react-query"
 import { Card, Col, Form, Input, Row, Select, Space } from "antd"
 import { getAllTenants } from "../../../http/api"
-import type { Tenant } from "../../../types"
+import type { Tenant, UserFormProps } from "../../../types"
 
-const UserForm = () => {
+// Props are always sent in a object so they have to destructured here.
+// Eg :props are sent as : {prop1 : val,prop2 : val}
+const UserForm = ({ isEditing }: UserFormProps) => {
     const { data: tenants } = useQuery({
         queryKey: ["tenant"],
         queryFn: getAllTenants
     })
-
     return (
         <>
             <Row>
@@ -17,12 +18,13 @@ const UserForm = () => {
                         <Card title="Basic Info">
                             <Row gutter={20}>
                                 <Col span={12}>
-                                    <Form.Item label="First Name" name="firstName" rules={[
-                                        {
-                                            required: true,
-                                            message: "First name is requited"
-                                        }
-                                    ]}>
+                                    <Form.Item label="First Name" name="firstName" rules={
+                                        [
+                                            {
+                                                required: true,
+                                                message: "First name is requited"
+                                            }
+                                        ]}>
                                         <Input size="large" />
                                     </Form.Item>
                                 </Col>
@@ -40,7 +42,7 @@ const UserForm = () => {
                                     <Form.Item label="Email" name="email" rules={[
                                         {
                                             required: true,
-                                            message: "Email is requited"
+                                            message: "Email is required"
                                         },
                                         {
                                             type: "email",
@@ -52,19 +54,21 @@ const UserForm = () => {
                                 </Col>
                             </Row>
                         </Card>
-                        <Card title="Security Info">
-                            <Row >
-                                <Col span={12}>
-                                    <Form.Item label="Password" name="password" rules={[
-                                        {
-                                            required: true,
-                                            message: "Passowrd is requited"
-                                        }]}>
-                                        <Input.Password size="large" />
-                                    </Form.Item>
-                                </Col>
-                            </Row>
-                        </Card>
+                        {
+                            !isEditing && <Card title="Security Info">
+                                <Row >
+                                    <Col span={12}>
+                                        <Form.Item label="Password" name="password" rules={[
+                                            {
+                                                required: true,
+                                                message: "Passowrd is requited"
+                                            }]}>
+                                            <Input.Password size="large" />
+                                        </Form.Item>
+                                    </Col>
+                                </Row>
+                            </Card>
+                        }
                         <Card title="Role Info">
                             <Row gutter={20}>
                                 <Col span={12}>
@@ -74,7 +78,7 @@ const UserForm = () => {
                                             message: "Role is requited"
                                         }]}>
                                         <Select
-
+                                            id="selectRoleFromUserForm"
                                             allowClear={true}
                                             size="large"
                                             onChange={() => { }}
@@ -94,7 +98,6 @@ const UserForm = () => {
                                         <Select
                                             allowClear={true}
                                             size="large"
-                                            onChange={() => { }}
                                             placeholder="Select Restaurant">
                                             {
                                                 tenants?.data.map((tenant: Tenant) => <Select.Option value={tenant.id} key={tenant.id}>{tenant.name}</Select.Option>)

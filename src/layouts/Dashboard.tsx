@@ -54,7 +54,7 @@ const Dashboard = () => {
                     label: <NavLink to="/users">Users</NavLink>
                 },
                 {
-                    key: '/restaurants',
+                    key: '/tenants',
                     icon: <Icon component={Home} />,
                     label: <NavLink to="/tenants">Restaurants</NavLink>
                 },)

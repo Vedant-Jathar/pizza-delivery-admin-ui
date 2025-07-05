@@ -42,3 +42,16 @@ export interface mappedFields {
     q?: string,
     role?: string
 }
+
+export type UserFormProps = {
+    isEditing: boolean
+}
+
+export interface UpdateUserData {
+    id?: number,
+    firstName?: string,
+    lastName?: string,
+    email?: string,
+    role?: string,
+    tenantId?: number
+}

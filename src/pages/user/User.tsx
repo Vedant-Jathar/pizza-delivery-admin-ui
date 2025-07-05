@@ -1,7 +1,7 @@
 import { keepPreviousData, useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
-import { Breadcrumb, Button, Drawer, Flex, Form, notification, Space, Spin, Table, theme, Typography } from "antd"
+import { Breadcrumb, Button, Drawer, Flex, Form, Space, Spin, Table, theme, Typography } from "antd"
 import { Link, Navigate } from "react-router-dom"
-import { createUser, getAllUsers } from "../../http/api"
+import { createUser, getAllUsers, updateUser } from "../../http/api"
 import type { mappedFields, User } from '../../types'
 import { useAuthStore } from "../../store"
 import UserFilter from "./UserFilter"
@@ -13,6 +13,9 @@ import type { FieldData } from 'rc-field-form/lib/interface';
 import { debounce } from "lodash"
 
 const User = () => {
+
+    const [currentEditingUser, setCurrentEditingUser] = useState<User | null>(null)
+
     // "useMemo" stores the return value of the function you pass into it.
     const debouncedQUpdate = useMemo(() => {
         return debounce((value: string) => {
@@ -34,17 +37,28 @@ const User = () => {
         mutationKey: ['createUser'],
         mutationFn: createUser,
         onSuccess: () => {
-            notification.success({
-                message: "Success",
-                description: "User created successfully!",
-            });
+            queryClient.invalidateQueries({ queryKey: ['getAllUsers'] })
+        }
+    })
+
+    const { mutate: updateUserMutate } = useMutation({
+        mutationKey: ["updateUser"],
+        mutationFn: updateUser,
+        onSuccess: () => {
+            console.log("User updated");
             queryClient.invalidateQueries({ queryKey: ['getAllUsers'] })
         }
     })
 
     const handleChange = async () => {
         await form.validateFields()
-        await createUserMutate(form.getFieldsValue())
+        if (currentEditingUser) {
+            await updateUserMutate({ ...form.getFieldsValue(), id: currentEditingUser.id })
+            setCurrentEditingUser(null)
+        }
+        else {
+            await createUserMutate(form.getFieldsValue())
+        }
         form.resetFields()
         setDrawerOpen(false)
     }
@@ -105,6 +119,22 @@ const User = () => {
             key: "tenant",
             render: (text: string, record: User) => {
                 return <div>{record.tenant?.name}</div>
+            }
+        },
+        {
+            title: "Actions",
+            key: "edit",
+            render: (text: string, record: User) => {
+                return (
+                    <Button
+                        type="link"
+                        onClick={() => {
+                            setCurrentEditingUser(record)
+                            setDrawerOpen(true)
+                            form.setFieldsValue({ ...record, tenantId: record.tenant?.id })
+                        }}
+                    >Edit</Button>
+                )
             }
         }
     ]
@@ -176,12 +206,15 @@ const User = () => {
 
             {/* Create user drawer */}
             <Drawer
-                title="Create User"
+                title={currentEditingUser ? "Edit User" : "Add User"}
                 styles={{ body: { backgroundColor: colorBgLayout } }}
                 open={drawerOpen}
                 onClose={() => {
                     form.resetFields()
                     setDrawerOpen(false)
+                    if (currentEditingUser) {
+                        setCurrentEditingUser(null)
+                    }
                 }}
                 width={720}
                 destroyOnHidden={true}
@@ -190,13 +223,16 @@ const User = () => {
                         <Button onClick={() => {
                             form.resetFields()
                             setDrawerOpen(false)
+                            if (currentEditingUser) {
+                                setCurrentEditingUser(null)
+                            }
                         }}>Cancel</Button>
-                        <Button type="primary" onClick={handleChange}>Submit</Button>
+                        <Button type="primary" onClick={handleChange}>{currentEditingUser ? "Update" : "Submit"}</Button>
                     </Space>
                 }
             >
                 <Form layout="vertical" form={form} autoComplete="off">
-                    <UserForm />
+                    <UserForm isEditing={Boolean(currentEditingUser)} />
                 </Form>
             </Drawer>
         </>
