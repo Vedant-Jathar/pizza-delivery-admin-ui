@@ -6,6 +6,8 @@ import type { Tenant, UserFormProps } from "../../../types"
 // Props are always sent in a object so they have to destructured here.
 // Eg :props are sent as : {prop1 : val,prop2 : val}
 const UserForm = ({ isEditing }: UserFormProps) => {
+
+    const selectedRole = Form.useWatch('role')
     const { data: tenants } = useQuery({
         queryKey: ["tenant"],
         queryFn: getAllTenants
@@ -85,26 +87,28 @@ const UserForm = ({ isEditing }: UserFormProps) => {
                                             placeholder="Select Role">
                                             <Select.Option value="admin">Admin</Select.Option>
                                             <Select.Option value="manager">Manager</Select.Option>
-                                            <Select.Option value="customer">Customer</Select.Option>
+
                                         </Select>
                                     </Form.Item>
                                 </Col>
-                                <Col span={12}>
-                                    <Form.Item label="Restaurant" name="tenantId" rules={[
-                                        {
-                                            required: true,
-                                            message: "Restaurant is requited"
-                                        }]}>
-                                        <Select
-                                            allowClear={true}
-                                            size="large"
-                                            placeholder="Select Restaurant">
+                                {
+                                    (selectedRole === "manager") && <Col span={12}>
+                                        <Form.Item label="Restaurant" name="tenantId" rules={[
                                             {
-                                                tenants?.data.map((tenant: Tenant) => <Select.Option value={tenant.id} key={tenant.id}>{tenant.name}</Select.Option>)
-                                            }
-                                        </Select>
-                                    </Form.Item>
-                                </Col>
+                                                required: true,
+                                                message: "Restaurant is requited"
+                                            }]}>
+                                            <Select
+                                                allowClear={true}
+                                                size="large"
+                                                placeholder="Select Restaurant">
+                                                {
+                                                    tenants?.data.map((tenant: Tenant) => <Select.Option value={tenant.id} key={tenant.id}>{tenant.name}</Select.Option>)
+                                                }
+                                            </Select>
+                                        </Form.Item>
+                                    </Col>
+                                }
                             </Row>
                         </Card>
 

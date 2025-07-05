@@ -48,7 +48,7 @@ const User = () => {
             console.log("User updated");
             queryClient.invalidateQueries({ queryKey: ['getAllUsers'] })
         }
-    })
+    }) 
 
     const handleChange = async () => {
         await form.validateFields()
