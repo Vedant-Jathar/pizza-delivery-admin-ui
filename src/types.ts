@@ -55,3 +55,8 @@ export interface UpdateUserData {
     role?: string,
     tenantId?: number
 }
+
+export interface CreateTenantData {
+    name: string,
+    address: string
+}

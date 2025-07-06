@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query"
 import { Card, Col, Form, Input, Row, Select, Space } from "antd"
-import { getAllTenants } from "../../../http/api"
+import { getAllTenantsWithoutPagination } from "../../../http/api"
 import type { Tenant, UserFormProps } from "../../../types"
 
 // Props are always sent in a object so they have to destructured here.
@@ -10,7 +10,9 @@ const UserForm = ({ isEditing }: UserFormProps) => {
     const selectedRole = Form.useWatch('role')
     const { data: tenants } = useQuery({
         queryKey: ["tenant"],
-        queryFn: getAllTenants
+        queryFn: async () => {
+            return await getAllTenantsWithoutPagination()
+        }
     })
     return (
         <>
@@ -24,7 +26,7 @@ const UserForm = ({ isEditing }: UserFormProps) => {
                                         [
                                             {
                                                 required: true,
-                                                message: "First name is requited"
+                                                message: "First name is required"
                                             }
                                         ]}>
                                         <Input size="large" />
