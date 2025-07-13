@@ -1,3 +1,5 @@
+import type mongoose from "mongoose"
+
 export type credentials = {
     email: string,
     password: string
@@ -80,4 +82,27 @@ export interface Category {
     name: string
     priceConfiguration: PriceConfiguration,
     attributes: Attribute[]
+}
+
+export interface Product {
+    _id?: mongoose.Types.ObjectId,
+    name: string,
+    description: string,
+    priceConfiguration: string | Record<string, string>,
+    attributes: string | Record<string, string>,
+    tenantId: string,
+    categoryId: string,
+    isPublished: boolean,
+    image?: string
+    _doc?: Record<string, string>
+    category: Record<string, string>
+}
+
+export interface QueryParams {
+    page: number,
+    limit: number,
+    categoryId?: string,
+    tenantId?: string,
+    q?: string,
+    isPublished?: boolean
 }

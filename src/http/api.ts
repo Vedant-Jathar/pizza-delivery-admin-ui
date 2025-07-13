@@ -1,4 +1,4 @@
-import type { CreateTenantData, CreateUserData, credentials, UpdateUserData } from "../types";
+import type { CreateTenantData, CreateUserData, credentials, QueryParams, UpdateUserData } from "../types";
 import api from "./client";
 
 export const AUTH_SERVICE = "/api/auth"
@@ -23,3 +23,4 @@ export const updateTenant = (data: CreateTenantData, id: number) => api.patch(`$
 // Catalog Service:
 
 export const getCategories = async () => await api.get(`${CATALOG_SERVICE}/category`)
+export const getProductsList = async (queryString: string) => await api.get(`${CATALOG_SERVICE}/products?${queryString}`)
