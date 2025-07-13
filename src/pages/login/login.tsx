@@ -29,7 +29,7 @@ function LoginPage() {
     })
 
     const { mutate: logoutMutate } = useMutation({
-        mutationKey: ["logut"],
+        mutationKey: ["logout"],
         mutationFn: logout,
         onSuccess: () => {
             logoutFromStore()

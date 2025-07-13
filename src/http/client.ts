@@ -1,4 +1,5 @@
 import axios from "axios";
+import { AUTH_SERVICE } from "./api";
 
 const api = axios.create({
     baseURL: import.meta.env.VITE_BACKEND_API_URL,
@@ -10,11 +11,12 @@ const api = axios.create({
 })
 
 const refresh = async () => {
-    await axios.post("http://localhost:5501/auth/refresh", {}, {
+    await axios.post(`http://localhost:8000${AUTH_SERVICE}/auth/refresh`, {}, {
         withCredentials: true
     })
 }
 
+//This is used when "self" route fails because of expired accessToken so we intercept this response and refresh the tokens and then again send the request.
 api.interceptors.response.use((response) => response,
     async (error) => {
         try {
