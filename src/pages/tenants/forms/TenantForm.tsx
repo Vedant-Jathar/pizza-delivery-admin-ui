@@ -1,5 +1,4 @@
-import { Col, Form, Input, Row, Space } from "antd"
-import type { Tenant } from "../../../types"
+import { Col, Form, Input, Row } from "antd"
 
 const TenantForm = () => {
     return (

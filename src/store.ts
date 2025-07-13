@@ -2,6 +2,7 @@ import { create } from "zustand"
 import { devtools } from "zustand/middleware"
 
 export interface Tenant {
+    id?: number,
     name: string
     address: string
 }

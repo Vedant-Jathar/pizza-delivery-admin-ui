@@ -9,7 +9,7 @@ export const CATALOG_SERVICE = "/api/catalog"
 export const login = (credentials: credentials) => api.post(`${AUTH_SERVICE}/auth/login`, credentials)
 export const self = async () => await api.get(`${AUTH_SERVICE}/auth/self`)
 export const logout = () => api.post(`${AUTH_SERVICE}/auth/logout`)
-export const getAllUsers = (queryString: string) => api.get(`${AUTH_SERVICE}/users?${queryString}`) 
+export const getAllUsers = (queryString: string) => api.get(`${AUTH_SERVICE}/users?${queryString}`)
 
 export const getAllTenants = (queryString: string) => api.get(`${AUTH_SERVICE}/tenants?${queryString}`)
 export const getAllTenantsWithoutPagination = () => api.get(`${AUTH_SERVICE}/tenants/all`)
@@ -22,3 +22,4 @@ export const updateTenant = (data: CreateTenantData, id: number) => api.patch(`$
 
 // Catalog Service:
 
+export const getCategories = async () => await api.get(`${CATALOG_SERVICE}/category`)
