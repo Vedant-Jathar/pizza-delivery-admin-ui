@@ -10,6 +10,9 @@ import UserIcon from "../components/icons/UserIcon"
 import Logo from "../components/icons/Logo"
 import { logout } from "../http/api"
 import { useMutation } from "@tanstack/react-query"
+import GiftIcon from "../components/icons/GiftIcon"
+import BasketIcon from "../components/icons/BasketIcon"
+import { FoodIcon } from "../components/icons/FoodIcon"
 
 const Dashboard = () => {
 
@@ -37,12 +40,12 @@ const Dashboard = () => {
             },
             {
                 key: '/products',
-                icon: <Icon component={Home} />,
+                icon: <Icon component={BasketIcon} />,
                 label: <NavLink to="/products">Products</NavLink>
             },
             {
                 key: '/promos',
-                icon: <Icon component={Home} />,
+                icon: <Icon component={GiftIcon} />,
                 label: <NavLink to="/promos">Promos</NavLink>
             },
         ]
@@ -55,7 +58,7 @@ const Dashboard = () => {
                 },
                 {
                     key: '/tenants',
-                    icon: <Icon component={Home} />,
+                    icon: <Icon component={FoodIcon} />,
                     label: <NavLink to="/tenants">Restaurants</NavLink>
                 },)
         }

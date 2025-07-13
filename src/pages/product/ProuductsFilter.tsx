@@ -49,7 +49,7 @@ const ProuductsFilter = ({ children }: ProductFilterProps) => {
 
                             <Col span={6}>
                                 <Form.Item name="tenantId">
-                                    <Select size="large" style={{ width: "100%" }} placeholder="Select Tenant">
+                                    <Select size="large" allowClear={true} style={{ width: "100%" }} placeholder="Select Tenant">
                                         {
                                             (tenants?.data || []).map((tenant: Tenant) =>
                                                 <Select.Option key={tenant.id} value={tenant.id}>{tenant.name}</Select.Option>
@@ -61,7 +61,9 @@ const ProuductsFilter = ({ children }: ProductFilterProps) => {
 
                             <Col span={6}>
                                 <Space>
-                                    <Switch defaultChecked onChange={() => { }} />
+                                    <Form.Item name="isPublished">
+                                        <Switch defaultChecked={false} onChange={() => { }} />
+                                    </Form.Item>
                                     <Typography.Text>Show only Published</Typography.Text>
                                 </Space>
                             </Col>

@@ -99,8 +99,8 @@ export interface Product {
 }
 
 export interface QueryParams {
-    page: number,
-    limit: number,
+    page?: number,
+    limit?: number,
     categoryId?: string,
     tenantId?: string,
     q?: string,

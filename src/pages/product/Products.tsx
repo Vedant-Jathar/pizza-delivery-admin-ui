@@ -2,13 +2,14 @@ import { Breadcrumb, Button, Form, Image, Space, Table, Tag, Typography } from "
 import { Link } from "react-router-dom"
 import { PlusOutlined, RightOutlined } from "@ant-design/icons"
 import ProuductsFilter from "./ProuductsFilter"
-import { useQuery } from "@tanstack/react-query"
+import { keepPreviousData, useQuery } from "@tanstack/react-query"
 import { getProductsList } from "../../http/api"
-import type { Product } from "../../types"
-import { useState } from "react"
+import type { Product, QueryParams } from "../../types"
+import { useMemo, useState } from "react"
 import { PER_PAGE } from "../../constants"
 import type { FieldData } from "rc-field-form/lib/interface"
 import { format } from "date-fns"
+import { debounce } from "lodash"
 
 const Products = () => {
 
@@ -63,6 +64,12 @@ const Products = () => {
         },
     ]
 
+    const debouncedQUpdate = useMemo(() => {
+        return debounce((value: string) => {
+            setQueryParams((prev) => ({ ...prev, page: 1, q: value }))
+        }, 500)
+    }, [])
+
     const [queryParams, setQueryParams] = useState({
         page: 1,
         limit: PER_PAGE
@@ -71,7 +78,13 @@ const Products = () => {
     const handleFieldsChange = (changedFields: FieldData[]) => {
         const mappedFields = (changedFields.map((item) => ({ [item.name[0]]: item.value }))).reduce((acc, item) => ({ ...acc, ...item }), {})
 
-        setQueryParams(prev => ({ ...prev, page: 1, ...mappedFields }))
+        if ((mappedFields as QueryParams).q) {
+            debouncedQUpdate((mappedFields as QueryParams).q!)
+        }
+        else {
+            setQueryParams(prev => ({ ...prev, page: 1, ...mappedFields }))
+        }
+
 
         console.log("changedFields", changedFields);
         console.log("QueryParams", queryParams);
@@ -83,12 +96,13 @@ const Products = () => {
             const filteredQueryParams = Object.fromEntries((Object.entries(queryParams)).filter((item) => item[1]))
             const queryString = new URLSearchParams(filteredQueryParams as unknown as Record<string, string>).toString()
             return await getProductsList(queryString)
-        }
+        },
+        placeholderData: keepPreviousData
     })
 
     return (
         <>
-            {isFetching && <div>Loading....</div>}
+            {/* {isFetching && <div>Loading....</div>} */}
             {isError && <div>{error.message}</div>}
             <Breadcrumb
                 separator={<RightOutlined />}
