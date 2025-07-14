@@ -1,14 +1,26 @@
 import { useQuery } from "@tanstack/react-query"
-import { Card, Col, Form, Input, Row, Select, Space, Typography, Upload } from "antd"
-import { getCategories } from "../../../http/api"
-import type { Category } from "../../../types"
+import { Card, Col, Form, Input, Row, Select, Space, Switch, Typography, Upload } from "antd"
+import { getAllTenantsWithoutPagination, getCategories } from "../../../http/api"
+import type { Category, Tenant } from "../../../types"
 import { PlusOutlined } from "@ant-design/icons"
+import { useWatch } from "antd/es/form/Form"
+import Pricing from "./Pricing"
+import Attributes from "./Attributes"
 
 const ProductForm = () => {
+    const selectedCategory = useWatch("categoryId")
+
     const { data: categories } = useQuery({
-        queryKey: ["getCategories"],
+        queryKey: ["getCategoryList"],
         queryFn: async () => {
             return await getCategories()
+        }
+    })
+
+    const { data: tenants } = useQuery({
+        queryKey: ["getTenantsList"],
+        queryFn: async () => {
+            return await getAllTenantsWithoutPagination()
         }
     })
 
@@ -43,7 +55,7 @@ const ProductForm = () => {
                                             size="large"
                                             placeholder="Select Category">
                                             {categories?.data.map((category: Category) =>
-                                                <Select.Option value={category._id} key={category._id}>{category.name}</Select.Option>
+                                                <Select.Option value={JSON.stringify(category)} key={category._id}>{category.name}</Select.Option>
                                             )
                                             }
                                         </Select>
@@ -79,6 +91,46 @@ const ProductForm = () => {
                                     </Form.Item>
                                 </Col>
 
+                            </Row>
+                        </Card>
+                        <Card title="Restaurant Info">
+                            <Row gutter={20}>
+                                <Col span={12}>
+                                    <Form.Item label="" name="tenantId" rules={[
+                                        {
+                                            required: true,
+                                            message: "Restaurant is required"
+                                        }]}>
+                                        <Select
+                                            id="tenant"
+                                            allowClear={true}
+                                            size="large"
+                                            placeholder="Select Restaurant">
+                                            {tenants?.data.map((tenant: Tenant) =>
+                                                <Select.Option value={tenant.id} key={tenant.id}>{tenant.name}</Select.Option>
+                                            )
+                                            }
+                                        </Select>
+                                    </Form.Item>
+                                </Col>
+                            </Row>
+                        </Card>
+                        {
+                            selectedCategory && <Pricing selectedcategory={selectedCategory} />
+                        }
+                        {
+                            selectedCategory && <Attributes />
+                        }
+                        <Card title="Other properties">
+                            <Row gutter={20}>
+                                <Col span={24}>
+                                    <Space>
+                                        <Form.Item>
+                                            <Switch defaultChecked={false} checkedChildren="Yes" unCheckedChildren="No" />
+                                        </Form.Item>
+                                        <Typography.Text style={{ display: "block", marginBottom: "25px", fontSize: "15px" }}>Published</Typography.Text>
+                                    </Space>
+                                </Col>
                             </Row>
                         </Card>
                     </Space>

@@ -76,8 +76,8 @@ const Products = () => {
         },
     ]
 
-    const handleChange = () => {
-        console.log("Submit...");
+    const handleSubmit = () => {
+        console.log(productForm.getFieldsValue());
     }
 
     const debouncedQUpdate = useMemo(() => {
@@ -136,6 +136,7 @@ const Products = () => {
                 }
                 {isError && <Typography.Text type="danger">{error?.message}</Typography.Text>}
             </Flex>
+
             <Form onFieldsChange={handleFieldsChange}>
                 <ProuductsFilter>
                     <Button
@@ -170,6 +171,7 @@ const Products = () => {
                 }
                 }
             />
+
             <Drawer
                 title={"Add Product"}
                 styles={{ body: { backgroundColor: colorBgLayout } }}
@@ -178,7 +180,7 @@ const Products = () => {
                     productForm.resetFields()
                     setDrawerOpen(false)
                 }}
-                width={720}
+                width={650}
                 destroyOnHidden={true}
                 extra={
                     <Space>
@@ -187,7 +189,7 @@ const Products = () => {
                             setDrawerOpen(false)
                         }}>Cancel</Button>
 
-                        <Button type="primary" onClick={handleChange}>{"Submit"}</Button>
+                        <Button type="primary" onClick={handleSubmit}>{"Submit"}</Button>
                     </Space>
                 }
             >
