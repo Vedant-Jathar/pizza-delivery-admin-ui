@@ -1,6 +1,6 @@
-import { Breadcrumb, Button, Form, Image, Space, Table, Tag, Typography } from "antd"
+import { Breadcrumb, Button, Flex, Form, Image, Space, Spin, Table, Tag, Typography } from "antd"
 import { Link } from "react-router-dom"
-import { PlusOutlined, RightOutlined } from "@ant-design/icons"
+import { LoadingOutlined, PlusOutlined, RightOutlined } from "@ant-design/icons"
 import ProuductsFilter from "./ProuductsFilter"
 import { keepPreviousData, useQuery } from "@tanstack/react-query"
 import { getProductsList } from "../../http/api"
@@ -10,8 +10,10 @@ import { PER_PAGE } from "../../constants"
 import type { FieldData } from "rc-field-form/lib/interface"
 import { format } from "date-fns"
 import { debounce } from "lodash"
+import { useAuthStore } from "../../store"
 
 const Products = () => {
+    const { user } = useAuthStore()
 
     const productTableColumns = [
         {
@@ -84,16 +86,18 @@ const Products = () => {
         else {
             setQueryParams(prev => ({ ...prev, page: 1, ...mappedFields }))
         }
-
-
-        console.log("changedFields", changedFields);
-        console.log("QueryParams", queryParams);
     }
 
     const { data: products, isFetching, isError, error } = useQuery({
         queryKey: ['getProductsList', queryParams],
         queryFn: async () => {
-            const filteredQueryParams = Object.fromEntries((Object.entries(queryParams)).filter((item) => item[1]))
+            let filteredQueryParams = Object.fromEntries((Object.entries(queryParams)).filter((item) => item[1]))
+
+            // The manager of a tenant can only view products of his tenant.
+            // The admin can view everyone elses products
+            if (user?.role === "manager") {
+                filteredQueryParams = { ...filteredQueryParams, tenantId: user.tenant!.id! }
+            }
             const queryString = new URLSearchParams(filteredQueryParams as unknown as Record<string, string>).toString()
             return await getProductsList(queryString)
         },
@@ -102,20 +106,22 @@ const Products = () => {
 
     return (
         <>
-            {/* {isFetching && <div>Loading....</div>} */}
-            {isError && <div>{error.message}</div>}
-            <Breadcrumb
-                separator={<RightOutlined />}
-                items={[
-                    {
-                        title: <Link to="/">Dashboard</Link>
-                    },
-                    {
-                        title: <Link to="/products">Products</Link>
-                    }
-                ]}
-            />
-
+            <Flex justify="space-between" style={{ marginBottom: "2U0px" }}>
+                <Breadcrumb
+                    separator={<RightOutlined />}
+                    items={[
+                        {
+                            title: <Link to="/">Dashboard</Link>
+                        },
+                        {
+                            title: <Link to="/products">Products</Link>
+                        }
+                    ]}
+                />
+                {isFetching && <Spin indicator={<LoadingOutlined style={{ fontSize: 25 }} spin />} />
+                }
+                {isError && <Typography.Text type="danger">{error?.message}</Typography.Text>}
+            </Flex>
             <Form onFieldsChange={handleFieldsChange}>
                 <ProuductsFilter>
                     <Button

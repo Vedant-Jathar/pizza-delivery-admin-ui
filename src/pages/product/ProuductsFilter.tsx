@@ -3,13 +3,16 @@ import { Card, Col, Form, Input, Row, Select, Space, Switch, Typography } from "
 import React from "react"
 import { getAllTenantsWithoutPagination, getCategories } from "../../http/api"
 import type { Category } from "../../types"
-import type { Tenant } from "../../store"
+import { useAuthStore, type Tenant } from "../../store"
 
 interface ProductFilterProps {
     children: React.ReactNode
 }
 
 const ProuductsFilter = ({ children }: ProductFilterProps) => {
+
+    const { user } = useAuthStore()
+
     const { data: categories } = useQuery({
         queryKey: ["getCategoryList"],
         queryFn: async () => {
@@ -47,17 +50,20 @@ const ProuductsFilter = ({ children }: ProductFilterProps) => {
                                 </Form.Item>
                             </Col>
 
-                            <Col span={6}>
-                                <Form.Item name="tenantId">
-                                    <Select size="large" allowClear={true} style={{ width: "100%" }} placeholder="Select Tenant">
-                                        {
-                                            (tenants?.data || []).map((tenant: Tenant) =>
-                                                <Select.Option key={tenant.id} value={tenant.id}>{tenant.name}</Select.Option>
-                                            )
-                                        }
-                                    </Select>
-                                </Form.Item>
-                            </Col>
+
+                            {user?.role === "admin" &&
+                                <Col span={6}>
+                                    <Form.Item name="tenantId">
+                                        <Select size="large" allowClear={true} style={{ width: "100%" }} placeholder="Select Tenant">
+                                            {
+                                                (tenants?.data || []).map((tenant: Tenant) =>
+                                                    <Select.Option key={tenant.id} value={tenant.id}>{tenant.name}</Select.Option>
+                                                )
+                                            }
+                                        </Select>
+                                    </Form.Item>
+                                </Col>
+                            }
 
                             <Col span={6}>
                                 <Space>
@@ -67,6 +73,7 @@ const ProuductsFilter = ({ children }: ProductFilterProps) => {
                                     <Typography.Text>Show only Published</Typography.Text>
                                 </Space>
                             </Col>
+                            
 
                         </Row>
                     </Col>
