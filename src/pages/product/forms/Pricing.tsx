@@ -1,7 +1,7 @@
 import { Card, Col, Row, Space, Typography, Form, InputNumber } from "antd"
 import type { Category } from "../../../types"
 
-type props = { selectedcategory: string }
+export type props = { selectedcategory: string }
 
 const Pricing = ({ selectedcategory }: props) => {
 
@@ -9,15 +9,14 @@ const Pricing = ({ selectedcategory }: props) => {
 
     return (
         <>
-            <Card>
+            <Card title={"Pricing Info"}>
                 {
-
                     Object.entries(category.priceConfiguration).map(([configurationKey, configurationValue]) => {
 
                         return (
                             <div key={configurationKey}>
                                 <Space direction="vertical">
-                                    <Typography.Text>{`${configurationKey}(${configurationValue.priceType})`}</Typography.Text>
+                                    <Typography.Text>{`${configurationKey} (${configurationValue.priceType})`}</Typography.Text>
                                     <Row gutter={20}>
                                         {
                                             configurationValue.availableOptions.map(option => {

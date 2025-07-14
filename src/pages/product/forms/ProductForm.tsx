@@ -119,13 +119,13 @@ const ProductForm = () => {
                             selectedCategory && <Pricing selectedcategory={selectedCategory} />
                         }
                         {
-                            selectedCategory && <Attributes />
+                            selectedCategory && <Attributes selectedcategory={selectedCategory} />
                         }
                         <Card title="Other properties">
                             <Row gutter={20}>
                                 <Col span={24}>
                                     <Space>
-                                        <Form.Item>
+                                        <Form.Item initialValue={false} name={"isPublished"}>
                                             <Switch defaultChecked={false} checkedChildren="Yes" unCheckedChildren="No" />
                                         </Form.Item>
                                         <Typography.Text style={{ display: "block", marginBottom: "25px", fontSize: "15px" }}>Published</Typography.Text>
