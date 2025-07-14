@@ -50,7 +50,6 @@ const ProuductsFilter = ({ children }: ProductFilterProps) => {
                                 </Form.Item>
                             </Col>
 
-
                             {user?.role === "admin" &&
                                 <Col span={6}>
                                     <Form.Item name="tenantId">
@@ -70,10 +69,10 @@ const ProuductsFilter = ({ children }: ProductFilterProps) => {
                                     <Form.Item name="isPublished">
                                         <Switch defaultChecked={false} onChange={() => { }} />
                                     </Form.Item>
-                                    <Typography.Text>Show only Published</Typography.Text>
+                                    <Typography.Text style={{ display: "block", marginBottom: "23px" }}>Show only Published</Typography.Text>
                                 </Space>
                             </Col>
-                            
+
 
                         </Row>
                     </Col>
