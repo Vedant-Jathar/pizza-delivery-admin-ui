@@ -1,4 +1,4 @@
-import { Breadcrumb, Button, Flex, Form, Image, Space, Spin, Table, Tag, Typography } from "antd"
+import { Breadcrumb, Button, Drawer, Flex, Form, Image, Space, Spin, Table, Tag, theme, Typography } from "antd"
 import { Link } from "react-router-dom"
 import { LoadingOutlined, PlusOutlined, RightOutlined } from "@ant-design/icons"
 import ProuductsFilter from "./ProuductsFilter"
@@ -11,9 +11,19 @@ import type { FieldData } from "rc-field-form/lib/interface"
 import { format } from "date-fns"
 import { debounce } from "lodash"
 import { useAuthStore } from "../../store"
+import ProductForm from "./forms/ProductForm"
+import { useForm } from "antd/es/form/Form"
 
 const Products = () => {
     const { user } = useAuthStore()
+
+    const [productForm] = useForm()
+
+    const {
+        token: { colorBgLayout }
+    } = theme.useToken()
+
+    const [drawerOpen, setDrawerOpen] = useState(false)
 
     const productTableColumns = [
         {
@@ -65,6 +75,10 @@ const Products = () => {
 
         },
     ]
+
+    const handleChange = () => {
+        console.log("Submit...");
+    }
 
     const debouncedQUpdate = useMemo(() => {
         return debounce((value: string) => {
@@ -127,7 +141,7 @@ const Products = () => {
                     <Button
                         type='primary'
                         icon={<PlusOutlined />}
-                        onClick={() => { }}
+                        onClick={() => { setDrawerOpen(true) }}
                     >
                         Add Product
                     </Button>
@@ -156,6 +170,32 @@ const Products = () => {
                 }
                 }
             />
+            <Drawer
+                title={"Add Product"}
+                styles={{ body: { backgroundColor: colorBgLayout } }}
+                open={drawerOpen}
+                onClose={() => {
+                    productForm.resetFields()
+                    setDrawerOpen(false)
+                }}
+                width={720}
+                destroyOnHidden={true}
+                extra={
+                    <Space>
+                        <Button onClick={() => {
+                            productForm.resetFields()
+                            setDrawerOpen(false)
+                        }}>Cancel</Button>
+
+                        <Button type="primary" onClick={handleChange}>{"Submit"}</Button>
+                    </Space>
+                }
+            >
+                <Form layout="vertical" form={productForm} autoComplete="off">
+                    <ProductForm />
+                </Form>
+
+            </Drawer>
         </>
     )
 }

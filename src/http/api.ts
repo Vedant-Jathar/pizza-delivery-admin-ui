@@ -1,4 +1,4 @@
-import type { CreateTenantData, CreateUserData, credentials, QueryParams, UpdateUserData } from "../types";
+import type { CreateTenantData, CreateUserData, credentials, UpdateUserData } from "../types";
 import api from "./client";
 
 export const AUTH_SERVICE = "/api/auth"
