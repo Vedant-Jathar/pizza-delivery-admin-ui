@@ -1,9 +1,9 @@
-import { Breadcrumb, Button, Drawer, Flex, Form, Image, Space, Spin, Table, Tag, theme, Typography } from "antd"
+import { Breadcrumb, Button, Drawer, Flex, Form, Image, message, Space, Spin, Table, Tag, theme, Typography } from "antd"
 import { Link } from "react-router-dom"
 import { LoadingOutlined, PlusOutlined, RightOutlined } from "@ant-design/icons"
 import ProuductsFilter from "./ProuductsFilter"
-import { keepPreviousData, useQuery } from "@tanstack/react-query"
-import { getProductsList } from "../../http/api"
+import { keepPreviousData, useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
+import { createProduct, getProductsList } from "../../http/api"
 import type { Product, QueryParams } from "../../types"
 import { useMemo, useState } from "react"
 import { PER_PAGE } from "../../constants"
@@ -13,9 +13,12 @@ import { debounce } from "lodash"
 import { useAuthStore } from "../../store"
 import ProductForm from "./forms/ProductForm"
 import { useForm } from "antd/es/form/Form"
+import { makeFormData } from "../helper"
 
 const Products = () => {
     const { user } = useAuthStore()
+
+    const [messageApi, contextHolder] = message.useMessage();
 
     const [productForm] = useForm()
 
@@ -83,7 +86,7 @@ const Products = () => {
 
     const handleSubmit = () => {
 
-        // productForm.validateFields()
+        productForm.validateFields()
 
         const priceConfiguration = productForm.getFieldValue("priceConfiguration")
         const modifiedPriceConfig = Object.entries(priceConfiguration).reduce((acc, [key, value]) => {
@@ -111,8 +114,18 @@ const Products = () => {
 
         const categoryId = JSON.parse(productForm.getFieldValue("categoryId"))._id
 
-        console.log("categoryId", categoryId);
+        const productData = {
+            ...productForm.getFieldsValue(),
+            // image: productForm.getFieldValue("image"),
+            priceConfiguration: modifiedPriceConfig,
+            attributes: modifiedAttributes,
+            categoryId
+        }
 
+        const formData = makeFormData(productData)
+        createProductMutate(formData)
+        setDrawerOpen(false)
+        productForm.resetFields()
     }
 
     const debouncedQUpdate = useMemo(() => {
@@ -153,9 +166,22 @@ const Products = () => {
         placeholderData: keepPreviousData
     })
 
+    const queryClient = useQueryClient()
+
+    const { mutate: createProductMutate } = useMutation({
+        mutationKey: ["createProduct"],
+        mutationFn: createProduct,
+        onSuccess: () => {
+            messageApi.success("Product created successfully")
+            queryClient.invalidateQueries({ queryKey: ['getProductsList'] })
+            setDrawerOpen(false)
+            productForm.resetFields()
+        }
+    })
+
     return (
         <>
-            <Flex justify="space-between" style={{ marginBottom: "2U0px" }}>
+            <Flex justify="space-between" style={{ marginBottom: "20px" }}>
                 <Breadcrumb
                     separator={<RightOutlined />}
                     items={[
@@ -219,11 +245,11 @@ const Products = () => {
                 destroyOnHidden={true}
                 extra={
                     <Space>
+                        {contextHolder}
                         <Button onClick={() => {
                             productForm.resetFields()
                             setDrawerOpen(false)
                         }}>Cancel</Button>
-
                         <Button type="primary" onClick={handleSubmit}>{"Submit"}</Button>
                     </Space>
                 }
@@ -231,7 +257,6 @@ const Products = () => {
                 <Form layout="vertical" form={productForm} autoComplete="off">
                     <ProductForm />
                 </Form>
-
             </Drawer>
         </>
     )

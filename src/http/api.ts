@@ -24,3 +24,9 @@ export const updateTenant = (data: CreateTenantData, id: number) => api.patch(`$
 
 export const getCategories = async () => await api.get(`${CATALOG_SERVICE}/category`)
 export const getProductsList = async (queryString: string) => await api.get(`${CATALOG_SERVICE}/products?${queryString}`)
+
+export const createProduct = async (formData: FormData) => await api.post(`${CATALOG_SERVICE}/products`, formData, {
+    headers: {
+        "Content-Type": "multipart/formdata"
+    }
+})

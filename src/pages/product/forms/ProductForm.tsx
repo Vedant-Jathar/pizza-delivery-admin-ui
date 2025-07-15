@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query"
-import { Card, Col, Form, Input, Row, Select, Space, Switch, Typography, Upload } from "antd"
+import { Card, Col, Form, Input, Row, Select, Space, Switch, Typography, Upload, type UploadProps } from "antd"
 import { getAllTenantsWithoutPagination, getCategories } from "../../../http/api"
 import type { Category, Tenant } from "../../../types"
 import { PlusOutlined } from "@ant-design/icons"
@@ -23,6 +23,14 @@ const ProductForm = () => {
             return await getAllTenantsWithoutPagination()
         }
     })
+
+    const uploadProps: UploadProps = {
+        name: "file",
+        multiple: false,
+        beforeUpload: () => {
+            return false
+        }
+    }
 
     return (
         <>
@@ -82,7 +90,7 @@ const ProductForm = () => {
                                             required: true,
                                             message: "Product image is required"
                                         }]}>
-                                        <Upload listType="picture-card">
+                                        <Upload listType="picture-card" {...uploadProps}>
                                             <Space direction="vertical">
                                                 <PlusOutlined />
                                                 <Typography.Text>Upload</Typography.Text>

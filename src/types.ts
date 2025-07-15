@@ -1,4 +1,4 @@
-import type mongoose from "mongoose"
+import mongoose from "mongoose"
 
 export type credentials = {
     email: string,
@@ -105,4 +105,54 @@ export interface QueryParams {
     tenantId?: string,
     q?: string,
     isPublished?: boolean
+}
+
+
+
+
+export const AttributeSchema = new mongoose.Schema<Attribute>({
+    name: {
+        type: String,
+        required: true
+    },
+    widgetType: {
+        type: String,
+        required: true,
+        enum: ["switch", "radio"],
+    },
+    availableOptions: {
+        type: [String],
+        required: true
+    },
+    defaultValue: {
+        type: String,
+        required: true
+    },
+})
+
+export const PriceConfigurationSchema = new mongoose.Schema<PriceConfiguration>({
+    priceType: {
+        type: String,
+        required: true,
+        enum: ["base", "additional"]
+    },
+    availableOptions: {
+        type: [String],
+        required: true
+    }
+})
+
+export type ImageType = {
+    file: File
+}
+
+export interface CreateProductData {
+    _id: string,
+    name: string,
+    description: string,
+    image: ImageType,
+    categoryId: string,
+    tenantId: number,
+    priceConfiguration: typeof PriceConfigurationSchema,
+    attributes: typeof AttributeSchema,
 }
