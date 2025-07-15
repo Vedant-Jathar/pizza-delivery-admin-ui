@@ -1,4 +1,4 @@
-import { Breadcrumb, Button, Drawer, Flex, Form, Image, message, Space, Spin, Table, Tag, theme, Typography } from "antd"
+import { Breadcrumb, Button, Drawer, Flex, Form, Image, Space, Spin, Table, Tag, theme, Typography } from "antd"
 import { Link } from "react-router-dom"
 import { LoadingOutlined, PlusOutlined, RightOutlined } from "@ant-design/icons"
 import ProuductsFilter from "./ProuductsFilter"
@@ -14,12 +14,12 @@ import { useAuthStore } from "../../store"
 import ProductForm from "./forms/ProductForm"
 import { useForm } from "antd/es/form/Form"
 import { makeFormData } from "../helper"
+import useMessage from "antd/es/message/useMessage"
 
 const Products = () => {
     const { user } = useAuthStore()
 
-    const [messageApi, contextHolder] = message.useMessage();
-
+    const [messageApi, contextHolder] = useMessage()
     const [productForm] = useForm()
 
     const {
@@ -84,7 +84,7 @@ const Products = () => {
         priceType: string
     }
 
-    const handleSubmit = () => {
+    const handleSubmit = async () => {
 
         productForm.validateFields()
 
@@ -114,18 +114,23 @@ const Products = () => {
 
         const categoryId = JSON.parse(productForm.getFieldValue("categoryId"))._id
 
-        const productData = {
+        let productData = {
             ...productForm.getFieldsValue(),
-            // image: productForm.getFieldValue("image"),
             priceConfiguration: modifiedPriceConfig,
             attributes: modifiedAttributes,
             categoryId
         }
 
+        if (user?.role === "manager") {
+            productData =
+            {
+                ...productData,
+                tenantId: user?.tenant!.id
+            }
+        }
+
         const formData = makeFormData(productData)
-        createProductMutate(formData)
-        setDrawerOpen(false)
-        productForm.resetFields()
+        await createProductMutate(formData)
     }
 
     const debouncedQUpdate = useMemo(() => {
@@ -168,20 +173,25 @@ const Products = () => {
 
     const queryClient = useQueryClient()
 
-    const { mutate: createProductMutate } = useMutation({
+    const { mutate: createProductMutate, isPending: isCreateProductPending } = useMutation({
         mutationKey: ["createProduct"],
         mutationFn: createProduct,
         onSuccess: () => {
-            messageApi.success("Product created successfully")
             queryClient.invalidateQueries({ queryKey: ['getProductsList'] })
+            messageApi.success("Product created successfully")
             setDrawerOpen(false)
             productForm.resetFields()
+        },
+        onError: () => {
+            messageApi.error("Error in creating product")
         }
+
     })
 
     return (
         <>
             <Flex justify="space-between" style={{ marginBottom: "20px" }}>
+                {contextHolder}
                 <Breadcrumb
                     separator={<RightOutlined />}
                     items={[
@@ -245,12 +255,13 @@ const Products = () => {
                 destroyOnHidden={true}
                 extra={
                     <Space>
-                        {contextHolder}
+
                         <Button onClick={() => {
                             productForm.resetFields()
                             setDrawerOpen(false)
                         }}>Cancel</Button>
-                        <Button type="primary" onClick={handleSubmit}>{"Submit"}</Button>
+
+                        <Button type="primary" onClick={handleSubmit} loading={isCreateProductPending}>{"Submit"}</Button>
                     </Space>
                 }
             >

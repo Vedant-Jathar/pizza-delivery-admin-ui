@@ -1,11 +1,12 @@
 import { useQuery } from "@tanstack/react-query"
-import { Card, Col, Form, Input, Row, Select, Space, Switch, Typography, Upload, type UploadProps } from "antd"
+import { Card, Col, Form, Input, Row, Select, Space, Switch, Typography } from "antd"
 import { getAllTenantsWithoutPagination, getCategories } from "../../../http/api"
 import type { Category, Tenant } from "../../../types"
-import { PlusOutlined } from "@ant-design/icons"
 import { useWatch } from "antd/es/form/Form"
 import Pricing from "./Pricing"
 import Attributes from "./Attributes"
+import ProductImage from "./ProductImage"
+import { useAuthStore } from "../../../store"
 
 const ProductForm = () => {
     const selectedCategory = useWatch("categoryId")
@@ -24,13 +25,8 @@ const ProductForm = () => {
         }
     })
 
-    const uploadProps: UploadProps = {
-        name: "file",
-        multiple: false,
-        beforeUpload: () => {
-            return false
-        }
-    }
+    const { user } = useAuthStore()
+
 
     return (
         <>
@@ -85,23 +81,12 @@ const ProductForm = () => {
                         <Card title="Image Info">
                             <Row gutter={20}>
                                 <Col span={12}>
-                                    <Form.Item label="" name="image" rules={[
-                                        {
-                                            required: true,
-                                            message: "Product image is required"
-                                        }]}>
-                                        <Upload listType="picture-card" {...uploadProps}>
-                                            <Space direction="vertical">
-                                                <PlusOutlined />
-                                                <Typography.Text>Upload</Typography.Text>
-                                            </Space>
-                                        </Upload>
-                                    </Form.Item>
+                                    <ProductImage />
                                 </Col>
 
                             </Row>
                         </Card>
-                        <Card title="Restaurant Info">
+                        {user?.role === "admin" && <Card title="Restaurant Info">
                             <Row gutter={20}>
                                 <Col span={12}>
                                     <Form.Item label="" name="tenantId" rules={[
@@ -122,7 +107,7 @@ const ProductForm = () => {
                                     </Form.Item>
                                 </Col>
                             </Row>
-                        </Card>
+                        </Card>}
                         {
                             selectedCategory && <Pricing selectedcategory={selectedCategory} />
                         }
