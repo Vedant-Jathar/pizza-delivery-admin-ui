@@ -76,8 +76,43 @@ const Products = () => {
         },
     ]
 
+    interface keyType {
+        configurationKey: string,
+        priceType: string
+    }
+
     const handleSubmit = () => {
-        console.log(productForm.getFieldsValue());
+
+        // productForm.validateFields()
+
+        const priceConfiguration = productForm.getFieldValue("priceConfiguration")
+        const modifiedPriceConfig = Object.entries(priceConfiguration).reduce((acc, [key, value]) => {
+
+            const keyParsed: keyType = JSON.parse(key)
+
+            return ({
+                ...acc,
+                [keyParsed.configurationKey]: {
+                    priceType: keyParsed.priceType,
+                    availableOptions: value
+                }
+            })
+        }, {})
+
+        const attributes = productForm.getFieldValue("attributes")
+        const modifiedAttributes = Object.entries(attributes).map(([key, value]) => {
+            return (
+                {
+                    name: key,
+                    value: String(value) === "true" ? "Yes" : String(value) === "false" ? "No" : value
+                }
+            )
+        })
+
+        const categoryId = JSON.parse(productForm.getFieldValue("categoryId"))._id
+
+        console.log("categoryId", categoryId);
+
     }
 
     const debouncedQUpdate = useMemo(() => {

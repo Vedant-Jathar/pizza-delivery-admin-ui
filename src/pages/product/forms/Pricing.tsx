@@ -26,7 +26,8 @@ const Pricing = ({ selectedcategory }: props) => {
                                                             label={option}
                                                             rules={[
                                                                 {
-                                                                    required: true
+                                                                    required: true,
+                                                                    message:"Required"
                                                                 }
                                                             ]}
                                                             name={[
