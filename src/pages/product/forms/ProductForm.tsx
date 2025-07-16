@@ -11,6 +11,7 @@ import { useAuthStore } from "../../../store"
 const ProductForm = () => {
     const selectedCategory = useWatch("categoryId")
 
+
     const { data: categories } = useQuery({
         queryKey: ["getCategoryList"],
         queryFn: async () => {
@@ -26,7 +27,6 @@ const ProductForm = () => {
     })
 
     const { user } = useAuthStore()
-
 
     return (
         <>
@@ -59,7 +59,7 @@ const ProductForm = () => {
                                             size="large"
                                             placeholder="Select Category">
                                             {categories?.data.map((category: Category) =>
-                                                <Select.Option value={JSON.stringify(category)} key={category._id}>{category.name}</Select.Option>
+                                                <Select.Option value={category._id} key={category._id}>{category.name}</Select.Option>
                                             )
                                             }
                                         </Select>
@@ -100,7 +100,7 @@ const ProductForm = () => {
                                             size="large"
                                             placeholder="Select Restaurant">
                                             {tenants?.data.map((tenant: Tenant) =>
-                                                <Select.Option value={tenant.id} key={tenant.id}>{tenant.name}</Select.Option>
+                                                <Select.Option value={Number(tenant.id)} key={tenant.id}>{tenant.name}</Select.Option>
                                             )
                                             }
                                         </Select>

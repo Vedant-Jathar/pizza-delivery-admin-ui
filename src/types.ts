@@ -63,7 +63,7 @@ export interface CreateTenantData {
     address: string
 }
 
-export interface PriceConfiguration {
+export interface PriceConfiguration{
     [key: string]: {
         priceType: "base" | "additional",
         availableOptions: string[]
@@ -84,18 +84,30 @@ export interface Category {
     attributes: Attribute[]
 }
 
+export interface Attribute {
+    name: string,
+    value: string
+}
+
+export type priceConfiguration = {
+    [key: string]: {
+        priceType: string,
+        availableOptions: Record<string, number>
+    }
+}
+
 export interface Product {
     _id?: mongoose.Types.ObjectId,
     name: string,
     description: string,
-    priceConfiguration: string | Record<string, string>,
-    attributes: string | Record<string, string>,
+    priceConfiguration: priceConfiguration,
+    attributes: [Attribute],
     tenantId: string,
     categoryId: string,
     isPublished: boolean,
     image?: string
     _doc?: Record<string, string>
-    category: Record<string, string>
+    category: Category
 }
 
 export interface QueryParams {
@@ -106,9 +118,6 @@ export interface QueryParams {
     q?: string,
     isPublished?: boolean
 }
-
-
-
 
 export const AttributeSchema = new mongoose.Schema<Attribute>({
     name: {

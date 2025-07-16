@@ -30,3 +30,5 @@ export const createProduct = async (formData: FormData) => await api.post(`${CAT
         "Content-Type": "multipart/formdata"
     }
 })
+
+export const getCategoryById = (selectedCategory: string) => api.get(`${CATALOG_SERVICE}/category/${selectedCategory}`)

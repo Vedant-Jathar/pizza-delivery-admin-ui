@@ -4,8 +4,8 @@ import { LoadingOutlined, PlusOutlined, RightOutlined } from "@ant-design/icons"
 import ProuductsFilter from "./ProuductsFilter"
 import { keepPreviousData, useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { createProduct, getProductsList } from "../../http/api"
-import type { Product, QueryParams } from "../../types"
-import { useMemo, useState } from "react"
+import { type Product, type QueryParams } from "../../types"
+import { useEffect, useMemo, useState } from "react"
 import { PER_PAGE } from "../../constants"
 import type { FieldData } from "rc-field-form/lib/interface"
 import { format } from "date-fns"
@@ -19,6 +19,8 @@ import useMessage from "antd/es/message/useMessage"
 const Products = () => {
     const { user } = useAuthStore()
 
+    const [currentEditingProduct, setCurrentEditingProduct] = useState<Product | null>(null)
+
     const [messageApi, contextHolder] = useMessage()
     const [productForm] = useForm()
 
@@ -28,12 +30,52 @@ const Products = () => {
 
     const [drawerOpen, setDrawerOpen] = useState(false)
 
+    const hanldeEdit = () => {
+        if (!currentEditingProduct) return
+        console.log("currentEditingProduct", currentEditingProduct);
+
+        const modifiedPriceConfig = Object.entries(currentEditingProduct!.priceConfiguration).reduce((acc, [key, value]) => {
+
+            const stringifiedKey = JSON.stringify({
+                configurationKey: key,
+                priceType: value.priceType
+            })
+
+            return {
+                ...acc,
+                [stringifiedKey]: value.availableOptions
+            }
+        }, {})
+
+        const modifiesAttributes = currentEditingProduct.attributes.reduce((acc, item) => ({
+            ...acc,
+            [item.name]: item.value === "Yes" ? true : item.value === "No" ? false : item.value
+        }), {})
+
+        console.log("modifiesAttributes", modifiesAttributes);
+
+        productForm.setFieldsValue({
+            ...currentEditingProduct,
+            priceConfiguration: modifiedPriceConfig,
+            attributes: modifiesAttributes,
+            tenantId: Number(currentEditingProduct.tenantId)
+        })
+
+        console.log("setFields:", {
+            ...currentEditingProduct,
+            priceConfiguration: modifiedPriceConfig,
+            attributes: modifiesAttributes,
+        });
+    }
+
+    useEffect(hanldeEdit, [currentEditingProduct])
+
     const productTableColumns = [
         {
             title: "Product Name",
             dataIndex: "name",
             key: 'name',
-            render: (text: string, record: Product) => {
+            render: (_: string, record: Product) => {
                 return (
                     <Space>
                         <Image style={{ borderRadius: "10px" }} width={60} src={record.image} />
@@ -53,7 +95,7 @@ const Products = () => {
             title: "Category",
             dataIndex: "category.name",
             key: "category.name",
-            render: (text: string, record: Product) => {
+            render: (_: string, record: Product) => {
                 return <div>{record.category.name}</div>
             }
         },
@@ -62,7 +104,7 @@ const Products = () => {
             title: "Status",
             dataIndex: "isPublished",
             key: "isPublished",
-            render: (text: boolean, record: Product) =>
+            render: (_: boolean, record: Product) =>
                 record.isPublished ? <Tag color="green">Published</Tag> : <Tag color="red">Not published</Tag>
         },
 
@@ -77,6 +119,21 @@ const Products = () => {
             }
 
         },
+        {
+            title: "Actions",
+            key: "edit",
+            render: (_: string, record: Product) => {
+                return (
+                    <Button
+                        type="link"
+                        onClick={() => {
+                            setDrawerOpen(true)
+                            setCurrentEditingProduct(record)
+                        }}
+                    >Edit</Button>
+                )
+            }
+        }
     ]
 
     interface keyType {
@@ -85,14 +142,11 @@ const Products = () => {
     }
 
     const handleSubmit = async () => {
-
         productForm.validateFields()
 
         const priceConfiguration = productForm.getFieldValue("priceConfiguration")
         const modifiedPriceConfig = Object.entries(priceConfiguration).reduce((acc, [key, value]) => {
-
             const keyParsed: keyType = JSON.parse(key)
-
             return ({
                 ...acc,
                 [keyParsed.configurationKey]: {
@@ -112,13 +166,10 @@ const Products = () => {
             )
         })
 
-        const categoryId = JSON.parse(productForm.getFieldValue("categoryId"))._id
-
         let productData = {
             ...productForm.getFieldsValue(),
             priceConfiguration: modifiedPriceConfig,
             attributes: modifiedAttributes,
-            categoryId
         }
 
         if (user?.role === "manager") {
@@ -249,6 +300,8 @@ const Products = () => {
                 open={drawerOpen}
                 onClose={() => {
                     productForm.resetFields()
+                    if (currentEditingProduct) setCurrentEditingProduct(null)
+                    productForm.resetFields()
                     setDrawerOpen(false)
                 }}
                 width={650}
@@ -258,6 +311,7 @@ const Products = () => {
 
                         <Button onClick={() => {
                             productForm.resetFields()
+                            if (currentEditingProduct) setCurrentEditingProduct(null)
                             setDrawerOpen(false)
                         }}>Cancel</Button>
 

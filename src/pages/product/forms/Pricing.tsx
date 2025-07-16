@@ -1,18 +1,25 @@
 import { Card, Col, Row, Space, Typography, Form, InputNumber } from "antd"
 import type { Category } from "../../../types"
+import { useQuery } from "@tanstack/react-query"
+import { getCategoryById } from "../../../http/api"
 
-export type props = { selectedcategory: string }
+const Pricing = ({ selectedcategory }: { selectedcategory: string }) => {
 
-const Pricing = ({ selectedcategory }: props) => {
-
-    const category: Category = JSON.parse(selectedcategory)
+    const { data: category, isFetching: isGettingCategory, isError, error } = useQuery({
+        queryKey: ["getCategoryById",selectedcategory],
+        queryFn: async () => {
+            return await getCategoryById(selectedcategory)
+        },
+        staleTime: 1000 * 60 * 5,
+    })
 
     return (
         <>
-            <Card title={"Pricing Info"}>
+            {isGettingCategory && <div>Loading...</div>}
+            {isError && <div>Error:{error.message}</div>}
+            {category && <Card title={"Pricing Info"}>
                 {
-                    Object.entries(category.priceConfiguration).map(([configurationKey, configurationValue]) => {
-
+                    Object.entries((category?.data as Category).priceConfiguration).map(([configurationKey, configurationValue]) => {
                         return (
                             <div key={configurationKey}>
                                 <Space direction="vertical">
@@ -27,7 +34,7 @@ const Pricing = ({ selectedcategory }: props) => {
                                                             rules={[
                                                                 {
                                                                     required: true,
-                                                                    message:"Required"
+                                                                    message: "Required"
                                                                 }
                                                             ]}
                                                             name={[
@@ -49,7 +56,7 @@ const Pricing = ({ selectedcategory }: props) => {
                         )
                     })
                 }
-            </Card>
+            </Card>}
         </>
     )
 }
