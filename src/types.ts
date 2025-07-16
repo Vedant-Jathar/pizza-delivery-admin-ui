@@ -63,7 +63,7 @@ export interface CreateTenantData {
     address: string
 }
 
-export interface PriceConfiguration{
+export interface PriceConfiguration {
     [key: string]: {
         priceType: "base" | "additional",
         availableOptions: string[]
@@ -165,3 +165,4 @@ export interface CreateProductData {
     priceConfiguration: typeof PriceConfigurationSchema,
     attributes: typeof AttributeSchema,
 }
+

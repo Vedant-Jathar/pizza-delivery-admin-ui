@@ -2,13 +2,13 @@ import { useQuery } from "@tanstack/react-query"
 import { Card, Col, Form, Input, Row, Select, Space, Switch, Typography } from "antd"
 import { getAllTenantsWithoutPagination, getCategories } from "../../../http/api"
 import type { Category, Tenant } from "../../../types"
-import { useWatch } from "antd/es/form/Form"
+import { useWatch, type FormInstance } from "antd/es/form/Form"
 import Pricing from "./Pricing"
 import Attributes from "./Attributes"
 import ProductImage from "./ProductImage"
 import { useAuthStore } from "../../../store"
 
-const ProductForm = () => {
+const ProductForm = ({ form }: { form: FormInstance }) => {
     const selectedCategory = useWatch("categoryId")
 
 
@@ -81,7 +81,7 @@ const ProductForm = () => {
                         <Card title="Image Info">
                             <Row gutter={20}>
                                 <Col span={12}>
-                                    <ProductImage />
+                                    <ProductImage imageUri={form.getFieldValue("image")} />
                                 </Col>
 
                             </Row>

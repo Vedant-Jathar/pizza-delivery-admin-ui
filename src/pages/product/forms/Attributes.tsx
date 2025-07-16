@@ -6,7 +6,7 @@ import { getCategoryById } from "../../../http/api"
 const Attributes = ({ selectedcategory }: { selectedcategory: string }) => {
 
   const { data: category, isFetching: isGettingCategory, isError, error } = useQuery({
-    queryKey: ["getCategoryById"],
+    queryKey: ["getCategoryById", selectedcategory],
     queryFn: async () => {
       return await getCategoryById(selectedcategory)
     },

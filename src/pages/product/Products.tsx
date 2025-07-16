@@ -3,7 +3,7 @@ import { Link } from "react-router-dom"
 import { LoadingOutlined, PlusOutlined, RightOutlined } from "@ant-design/icons"
 import ProuductsFilter from "./ProuductsFilter"
 import { keepPreviousData, useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
-import { createProduct, getProductsList } from "../../http/api"
+import { createProduct, getProductsList, updateProductById } from "../../http/api"
 import { type Product, type QueryParams } from "../../types"
 import { useEffect, useMemo, useState } from "react"
 import { PER_PAGE } from "../../constants"
@@ -68,7 +68,7 @@ const Products = () => {
         });
     }
 
-    useEffect(hanldeEdit, [currentEditingProduct])
+    useEffect(hanldeEdit, [currentEditingProduct, productForm])
 
     const productTableColumns = [
         {
@@ -181,7 +181,14 @@ const Products = () => {
         }
 
         const formData = makeFormData(productData)
-        await createProductMutate(formData)
+
+        if (currentEditingProduct) {
+            formData.append("_id", productForm.getFieldValue("_id"))
+            await productMutate(formData)
+            return
+        } else {
+            await productMutate(formData)
+        }
     }
 
     const debouncedQUpdate = useMemo(() => {
@@ -224,20 +231,52 @@ const Products = () => {
 
     const queryClient = useQueryClient()
 
-    const { mutate: createProductMutate, isPending: isCreateProductPending } = useMutation({
+    const { mutate: productMutate, isPending: isCreateProductPending } = useMutation({
         mutationKey: ["createProduct"],
-        mutationFn: createProduct,
+        mutationFn: async (data: FormData) => {
+            if (currentEditingProduct) {
+                return await updateProductById(data)
+            }
+            else {
+                return await createProduct(data)
+            }
+
+        },
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['getProductsList'] })
-            messageApi.success("Product created successfully")
+            if (currentEditingProduct) {
+                setCurrentEditingProduct(null)
+                messageApi.success("Product updated successfully")
+            } else {
+                messageApi.success("Product created successfully")
+            }
             setDrawerOpen(false)
             productForm.resetFields()
         },
         onError: () => {
-            messageApi.error("Error in creating product")
+            if (currentEditingProduct) {
+                messageApi.error("Error in updating product")
+            } else {
+                messageApi.error("Error in creating product")
+            }
         }
 
     })
+
+    // const { mutate: updateProductMutate, isPending: isUpdateProductPending } = useMutation({
+    //     mutationKey: ["updateProduct"],
+    //     mutationFn: async (updateUserData: FormData) => { updateProductById(updateUserData) },
+    //     onSuccess: () => {
+    //         queryClient.invalidateQueries({ queryKey: ["getProductsList"] })
+    //         messageApi.success("Product updated successfully")
+    //         productForm.resetFields()
+    //         setCurrentEditingProduct(null)
+    //         setDrawerOpen(false)
+    //     },
+    //     onError: () => {
+    //         messageApi.error("Error in updating product")
+    //     }
+    // })
 
     return (
         <>
@@ -266,7 +305,7 @@ const Products = () => {
                         icon={<PlusOutlined />}
                         onClick={() => { setDrawerOpen(true) }}
                     >
-                        Add Product
+                        {"Add Product"}
                     </Button>
                 </ProuductsFilter>
             </Form>
@@ -295,7 +334,7 @@ const Products = () => {
             />
 
             <Drawer
-                title={"Add Product"}
+                title={currentEditingProduct ? "Update Product" : "Add Product"}
                 styles={{ body: { backgroundColor: colorBgLayout } }}
                 open={drawerOpen}
                 onClose={() => {
@@ -315,12 +354,12 @@ const Products = () => {
                             setDrawerOpen(false)
                         }}>Cancel</Button>
 
-                        <Button type="primary" onClick={handleSubmit} loading={isCreateProductPending}>{"Submit"}</Button>
+                        <Button type="primary" onClick={handleSubmit} loading={isCreateProductPending}>{currentEditingProduct ? "Update" : "Submit"}</Button>
                     </Space>
                 }
             >
                 <Form layout="vertical" form={productForm} autoComplete="off">
-                    <ProductForm />
+                    <ProductForm form={productForm} />
                 </Form>
             </Drawer>
         </>
