@@ -8,9 +8,9 @@ import Attributes from "./Attributes"
 import ProductImage from "./ProductImage"
 import { useAuthStore } from "../../../store"
 
-const ProductForm = ({ form }: { form: FormInstance }) => {
+const ProductForm = () => {
     const selectedCategory = useWatch("categoryId")
-
+    const imageUri = useWatch("image")
 
     const { data: categories } = useQuery({
         queryKey: ["getCategoryList"],
@@ -81,7 +81,7 @@ const ProductForm = ({ form }: { form: FormInstance }) => {
                         <Card title="Image Info">
                             <Row gutter={20}>
                                 <Col span={12}>
-                                    <ProductImage imageUri={form.getFieldValue("image")} />
+                                    <ProductImage imageUri={imageUri} />
                                 </Col>
 
                             </Row>

@@ -34,7 +34,7 @@ export const createProduct = async (formData: FormData) => await api.post(`${CAT
 export const getCategoryById = (selectedCategory: string) => api.get(`${CATALOG_SERVICE}/category/${selectedCategory}`)
 
 
-export const updateProductById = (formData: FormData) => api.put(`${CATALOG_SERVICE}/products/${formData.get("_id")}`, formData, {
+export const updateProductById = (formData: FormData) => api.put=(`${CATALOG_SERVICE}/products/${formData.get("_id")}`, formData, {
     headers: {
         "Content-Type": "multipart/formdata"
     }

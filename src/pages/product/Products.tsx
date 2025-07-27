@@ -359,7 +359,7 @@ const Products = () => {
                 }
             >
                 <Form layout="vertical" form={productForm} autoComplete="off">
-                    <ProductForm form={productForm} />
+                    <ProductForm />
                 </Form>
             </Drawer>
         </>
