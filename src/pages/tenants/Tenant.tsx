@@ -139,7 +139,7 @@ const Tenant = () => {
                     </Button>
                 </TenantFilter>
             </Form>
-
+            
             <Table
                 columns={tenantTableColumns}
                 dataSource={tenants?.data.data}

@@ -166,3 +166,10 @@ export interface CreateProductData {
     attributes: typeof AttributeSchema,
 }
 
+export interface createCouponData {
+    title: string,
+    code: string,
+    validUpto: string,
+    tenantId: string,
+    discount: number
+}
