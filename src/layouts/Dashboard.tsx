@@ -69,7 +69,7 @@ const Dashboard = () => {
         token: { colorBgContainer }
     } = theme.useToken()
 
-    // Note: "return" statements have to be after the hooks so that they dont get skipped
+    // Note: "return" statements have to be after the hooks so that the hooks dont get skipped
     if (!user) {
         return <Navigate to={"/auth/login"} />
     }
@@ -92,7 +92,6 @@ const Dashboard = () => {
                                     <BellFilled />
                                 </Badge>
                                 <Dropdown
-
                                     menu={{
                                         items: [
                                             {

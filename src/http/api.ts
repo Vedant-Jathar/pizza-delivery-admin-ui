@@ -1,8 +1,9 @@
-import type { CreateTenantData, CreateUserData, credentials, UpdateUserData } from "../types";
+import type { createCouponData, CreateTenantData, CreateUserData, credentials, UpdateUserData } from "../types";
 import api from "./client";
 
 export const AUTH_SERVICE = "/api/auth"
 export const CATALOG_SERVICE = "/api/catalog"
+export const ORDER_SERVICE = "/api/order"
 
 // Auth service:
 
@@ -33,9 +34,14 @@ export const createProduct = async (formData: FormData) => await api.post(`${CAT
 
 export const getCategoryById = (selectedCategory: string) => api.get(`${CATALOG_SERVICE}/category/${selectedCategory}`)
 
-
-export const updateProductById = (formData: FormData) => api.put=(`${CATALOG_SERVICE}/products/${formData.get("_id")}`, formData, {
+export const updateProductById = (formData: FormData) => api.put(`${CATALOG_SERVICE}/products/${formData.get("_id")}`, formData, {
     headers: {
         "Content-Type": "multipart/formdata"
     }
 })
+
+// Order Service:
+
+export const getCoupons = async () => await api.get(`${ORDER_SERVICE}/coupons`)
+
+export const createCoupon = async (data: createCouponData) => await api.post(`${ORDER_SERVICE}/coupons`, data)
