@@ -1,8 +1,7 @@
 import { Col, DatePicker, Form, Input, Row, Select } from "antd"
 import { useAuthStore } from "../../../store"
 import { useQuery } from "@tanstack/react-query"
-import { getAllTenants, getAllTenantsWithoutPagination } from "../../../http/api"
-import { useEffect } from "react"
+import {  getAllTenantsWithoutPagination } from "../../../http/api"
 import type { Tenant } from "../../../types"
 
 const PromoForm = () => {

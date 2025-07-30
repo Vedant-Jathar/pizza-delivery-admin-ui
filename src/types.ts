@@ -167,6 +167,7 @@ export interface CreateProductData {
 }
 
 export interface createCouponData {
+    _id: string,
     title: string,
     code: string,
     validUpto: string,

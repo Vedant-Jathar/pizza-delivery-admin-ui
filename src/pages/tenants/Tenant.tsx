@@ -75,7 +75,7 @@ const Tenant = () => {
         {
             title: "Edit",
             key: 'address',
-            render: (value: string, record: Tenant) =>
+            render: (_: string, record: Tenant) =>
                 <Button
                     type='link'
                     onClick={() => {
@@ -85,7 +85,6 @@ const Tenant = () => {
                     }}
                 >Edit</Button>
         },
-
     ]
 
     const { user } = useAuthStore()
@@ -139,7 +138,7 @@ const Tenant = () => {
                     </Button>
                 </TenantFilter>
             </Form>
-            
+
             <Table
                 columns={tenantTableColumns}
                 dataSource={tenants?.data.data}

@@ -1,15 +1,16 @@
-import { Breadcrumb, Button, Drawer, Form, Space, Spin, Table } from 'antd'
+import { Breadcrumb, Button, Drawer, Form, Space, Table } from 'antd'
 import { Link } from 'react-router-dom'
-import { PlusOutlined, RightOutlined } from "@ant-design/icons"
+import { DeleteOutlined, PlusOutlined, RightOutlined } from "@ant-design/icons"
 import PromoFilter from './PromoFilter'
-import { useEffect, useState } from 'react'
-import { QueryClient, useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { createCoupon, getCoupons } from '../../http/api'
-import { render } from '@testing-library/react'
+import { useState } from 'react'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { createCoupon, deleteCoupon, getCoupons, updateCoupon } from '../../http/api'
 import { useAuthStore } from '../../store'
 import { useForm } from 'antd/es/form/Form'
 import PromoForm from './forms/PromoForm'
 import useMessage from 'antd/es/message/useMessage'
+import type { createCouponData } from '../../types'
+import dayjs from 'dayjs'
 
 const Promo = () => {
 
@@ -17,7 +18,8 @@ const Promo = () => {
   const [messageApi, contextHolder] = useMessage()
   const [isDrawerOpen, setDrawerOpen] = useState(false)
   const [promoForm] = useForm()
-  const [currentEditingPromo, setCurrentEditingPromo] = useState(null)
+  const [currentEditingPromo, setCurrentEditingPromo] = useState<createCouponData | null>(null)
+
 
   const queryClient = useQueryClient()
 
@@ -32,21 +34,46 @@ const Promo = () => {
     }
   })
 
-  let promosTableColumns = [
+  const { mutate: updateCouponMutate } = useMutation({
+    mutationKey: ["updateCoupon"],
+    mutationFn: updateCoupon,
+    onSuccess: async () => {
+      messageApi.success("Coupon updated successfully")
+      queryClient.invalidateQueries({ queryKey: ["getCoupons"] })
+      promoForm.resetFields()
+      setDrawerOpen(false)
+      setCurrentEditingPromo(null)
+    }
+  })
+
+  const { mutate: deleteCouponMutate } = useMutation({
+    mutationKey: ["deleteCoupon"],
+    mutationFn: deleteCoupon,
+    onSuccess: () => {
+      messageApi.success("Coupon deleted successfuly")
+      queryClient.invalidateQueries({ queryKey: ["getCoupons"] })
+    }
+  })
+  
+  const promosTableColumns = [
     {
-      title: "Name",
+      title: <div style={{ textAlign: 'center' }}>Name</div>,
       dataIndex: "title",
-      key: 'title'
+      key: 'title',
+
     },
     {
       title: "Code",
       dataIndex: "code",
-      key: 'code'
+      key: 'code',
+      align: "center"
+
     },
     {
       title: "Valid Upto",
       dataIndex: "validUpto",
       key: 'vaildUpto',
+      align: "center",
       render: (text: string) => {
 
         const date = new Date(text);
@@ -70,18 +97,43 @@ const Promo = () => {
     {
       title: "Discount(%)",
       dataIndex: "discount",
-      key: 'discount'
-    }
+      key: 'discount',
+      align: "center"
+    },
+    {
+      title: "Edit",
+      key: '_id',
+      align: "center",
+      render: (_: string, record: createCouponData) =>
+        <Button
+          type='link'
+          onClick={() => {
+            setCurrentEditingPromo(record)
+            setDrawerOpen(true)
+            promoForm.setFieldsValue({ ...record, validUpto: dayjs(record.validUpto) })
+          }}
+        >Edit</Button>
+    },
+    {
+      title: "Delete",
+      align: "center",
+      render: (_: string, record: createCouponData) =>
+        <Button
+          type='link'
+          onClick={() => {
+            deleteCouponMutate(record)
+          }}
+        ><DeleteOutlined /></Button>
+    },
   ]
 
   if (user!.role === "admin") {
-    promosTableColumns = [
-      ...promosTableColumns,
-      {
-        title: "Restaurant Id",
-        dataIndex: "tenantId",
-        key: 'tenantId'
-      }]
+    promosTableColumns.splice(2, 0, {
+      title: "Restaurant Id",
+      dataIndex: "tenantId",
+      key: 'tenantId',
+      align: "center"
+    })
   }
 
   const { data: couponData } = useQuery({
@@ -102,7 +154,15 @@ const Promo = () => {
         ...data, tenantId: user?.tenant?.id
       }
     }
-    createCouponMutate(data)
+
+    if (currentEditingPromo) {
+      data = { ...data, _id: currentEditingPromo._id }
+      updateCouponMutate(data)
+      return
+    } else {
+      createCouponMutate(data)
+      return
+    }
   }
 
 

@@ -45,3 +45,7 @@ export const updateProductById = (formData: FormData) => api.put(`${CATALOG_SERV
 export const getCoupons = async () => await api.get(`${ORDER_SERVICE}/coupons`)
 
 export const createCoupon = async (data: createCouponData) => await api.post(`${ORDER_SERVICE}/coupons`, data)
+
+export const updateCoupon = async (data: createCouponData) => await api.patch(`${ORDER_SERVICE}/coupons/${data._id}`, data)
+
+export const deleteCoupon = async (data: createCouponData) => await api.delete(`${ORDER_SERVICE}/coupons/${data._id}`)
