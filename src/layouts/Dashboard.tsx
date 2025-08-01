@@ -13,6 +13,7 @@ import { useMutation } from "@tanstack/react-query"
 import GiftIcon from "../components/icons/GiftIcon"
 import BasketIcon from "../components/icons/BasketIcon"
 import { FoodIcon } from "../components/icons/FoodIcon"
+import ToppingIcon from "../components/icons/ToppingIcon"
 
 const Dashboard = () => {
 
@@ -42,6 +43,11 @@ const Dashboard = () => {
                 key: '/products',
                 icon: <Icon component={BasketIcon} />,
                 label: <NavLink to="/products">Products</NavLink>
+            },
+            {
+                key: '/toppings',
+                icon: <Icon component={ToppingIcon} />,
+                label: <NavLink to="/toppings">Toppings</NavLink>
             },
             {
                 key: '/promos',

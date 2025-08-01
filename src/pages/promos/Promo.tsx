@@ -20,7 +20,6 @@ const Promo = () => {
   const [promoForm] = useForm()
   const [currentEditingPromo, setCurrentEditingPromo] = useState<createCouponData | null>(null)
 
-
   const queryClient = useQueryClient()
 
   const { mutate: createCouponMutate, isPending: createCouponPending } = useMutation({
@@ -54,13 +53,13 @@ const Promo = () => {
       queryClient.invalidateQueries({ queryKey: ["getCoupons"] })
     }
   })
-  
+
   const promosTableColumns = [
     {
       title: <div style={{ textAlign: 'center' }}>Name</div>,
       dataIndex: "title",
       key: 'title',
-
+      align: "center",
     },
     {
       title: "Code",

@@ -8,6 +8,7 @@ import User from "./pages/user/User";
 import Tenant from "./pages/tenants/Tenant";
 import Products from "./pages/product/Products";
 import Promo from "./pages/promos/Promo";
+import Topping from "./pages/toppings/Topping";
 
 export const router = createBrowserRouter([
     {
@@ -37,6 +38,10 @@ export const router = createBrowserRouter([
                     {
                         path: "promos",
                         element: <Promo />
+                    },
+                    {
+                        path: "toppings",
+                        element: <Topping />
                     },
                 ]
             },

@@ -174,3 +174,12 @@ export interface createCouponData {
     tenantId: string,
     discount: number
 }
+
+export interface Topping {
+    _id?: string;
+    name: string;
+    price: number;
+    image: string;
+    tenantId: string;
+    isPublished: boolean;
+}

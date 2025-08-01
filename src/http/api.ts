@@ -40,6 +40,8 @@ export const updateProductById = (formData: FormData) => api.put(`${CATALOG_SERV
     }
 })
 
+export const getToppings = async () => await api.get(`${CATALOG_SERVICE}/toppings/all`)
+
 // Order Service:
 
 export const getCoupons = async () => await api.get(`${ORDER_SERVICE}/coupons`)
