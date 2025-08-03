@@ -89,12 +89,22 @@ const Order = () => {
                 return <Typography.Text>{date}</Typography.Text>
             }
         },
+
+        {
+            title: "Details",
+            dataIndex: "createdAt",
+            key: "_id",
+            align: "center",
+            render: (_text: string, record: Order) => {
+                return <Link to={`/orders/${record._id}`}>See Details</Link>
+            }
+        },
     ]
 
     const { data: orderData, isFetching, isError, error } = useQuery({
         queryKey: ["getAllOrders", queryParams],
         queryFn: async () => {
-            let filteredQueryParams = Object.fromEntries((Object.entries(queryParams)).filter((item) => item[1]))
+            const filteredQueryParams = Object.fromEntries((Object.entries(queryParams)).filter((item) => item[1]))
             const queryString = new URLSearchParams(filteredQueryParams as unknown as Record<string, string>).toString()
 
             return getAllOrders(queryString).then(res => res.data)
