@@ -183,3 +183,66 @@ export interface Topping {
     tenantId: string;
     isPublished: boolean;
 }
+
+export enum OrderStatus {
+    RECEIVED = "received",
+    CONFIRMED = "confirmed",
+    PREPARED = "prepared",
+    OUT_FOR_DELIVERY = "out_for_delivery",
+    DELIVERED = "delivered"
+}
+
+export enum PaymentMode {
+    CARD = "card",
+    CASH = "cash",
+}
+
+export enum PaymentStatus {
+    PENDING = "pending",
+    PAID = "paid",
+    FAILED = "failed"
+}
+
+export interface CartItem {
+    product: Product
+    chosenConfig: {
+        priceConfig: {
+            [key: string]: string
+        }
+        selectedToppings: Topping[]
+    },
+    hash?: string
+    qty?: number
+    pricePerUnit?: number
+}
+
+export interface Address {
+    text: string,
+    isDefault?: boolean
+}
+
+export interface Customer {
+    userId: string,
+    firstName: string,
+    lastName: string,
+    email: string,
+    addresses?: Address[]
+}
+
+export interface Order {
+    _id: string,
+    cart: CartItem[],
+    customerId: Customer,
+    tenantId: string,
+    comment?: string,
+    address: string,
+    total: number,
+    taxes: number,
+    discount: number,
+    deliveryCharges: number,
+    paymentMode: PaymentMode,
+    paymentStatus: PaymentStatus,
+    paymentId: string,
+    orderStatus: OrderStatus,
+    createdAt: string
+}

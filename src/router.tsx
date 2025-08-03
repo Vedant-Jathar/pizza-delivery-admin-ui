@@ -4,10 +4,11 @@ import LoginPage from "./pages/login/login";
 import Dashboard from "./layouts/Dashboard";
 import NonAuth from "./layouts/NonAuth";
 import Root from "./layouts/Root";
-import User from "./pages/user/User";
-import Tenant from "./pages/tenants/Tenant";
 import Products from "./pages/product/Products";
 import Promo from "./pages/promos/Promo";
+import Order from "./pages/orders/Order";
+import User from "./pages/user/User";
+import Tenant from "./pages/tenants/Tenant";
 import Topping from "./pages/toppings/Topping";
 
 export const router = createBrowserRouter([
@@ -42,6 +43,10 @@ export const router = createBrowserRouter([
                     {
                         path: "toppings",
                         element: <Topping />
+                    },
+                    {
+                        path: "orders",
+                        element: <Order />
                     },
                 ]
             },

@@ -14,6 +14,7 @@ import GiftIcon from "../components/icons/GiftIcon"
 import BasketIcon from "../components/icons/BasketIcon"
 import { FoodIcon } from "../components/icons/FoodIcon"
 import ToppingIcon from "../components/icons/ToppingIcon"
+import { BagIcon } from "../components/icons/BagIcon"
 
 const Dashboard = () => {
 
@@ -38,6 +39,11 @@ const Dashboard = () => {
                 key: '/',
                 icon: <Icon component={Home} />,
                 label: <NavLink to="/">Home</NavLink>
+            },
+            {
+                key: '/orders',
+                icon: <Icon component={BagIcon} />,
+                label: <NavLink to="/orders">Orders</NavLink>
             },
             {
                 key: '/products',

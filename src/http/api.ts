@@ -51,3 +51,5 @@ export const createCoupon = async (data: createCouponData) => await api.post(`${
 export const updateCoupon = async (data: createCouponData) => await api.patch(`${ORDER_SERVICE}/coupons/${data._id}`, data)
 
 export const deleteCoupon = async (data: createCouponData) => await api.delete(`${ORDER_SERVICE}/coupons/${data._id}`)
+
+export const getAllOrders = async (queryString: string) => await api.get(`${ORDER_SERVICE}/orders?${queryString}`)
