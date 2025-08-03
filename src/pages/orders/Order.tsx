@@ -5,9 +5,10 @@ import { Link } from 'react-router-dom'
 import type { Order } from '../../types'
 import { useQuery } from '@tanstack/react-query'
 import { getAllOrders } from '../../http/api'
-import { PER_PAGE } from '../../constants'
+import { ColorMapping, PER_PAGE } from '../../constants'
 import OrderFilter from './OrderFilter'
 import type { FieldData } from 'rc-field-form/lib/interface'
+import { capitalize } from '../../utils'
 
 const Order = () => {
 
@@ -38,7 +39,6 @@ const Order = () => {
             title: "Address",
             dataIndex: "address",
             key: "address",
-            align: "center",
             render: (_text: string, record: Order) => {
                 return (<p>{record.address}</p>)
             }
@@ -47,7 +47,6 @@ const Order = () => {
             title: "Comment",
             dataIndex: "comment",
             key: "_id",
-            align: "center",
             render: (_text: string, record: Order) => {
                 return (<p>{record.comment}</p>)
             }
@@ -58,7 +57,7 @@ const Order = () => {
             key: "_id",
             align: "center",
             render: (_text: string, record: Order) => {
-                return <Tag color='green'>{record.orderStatus.toUpperCase()}</Tag>
+                return <Tag bordered={false} color={ColorMapping[record.orderStatus]}>{capitalize(record.orderStatus)}</Tag>
             }
         },
         {
