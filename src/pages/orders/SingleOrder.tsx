@@ -5,6 +5,7 @@ import { Link, useParams } from "react-router-dom"
 import { useQuery } from "@tanstack/react-query"
 import { getSingleOrder } from "../../http/api"
 import type { Order } from "../../types"
+import { capitalize } from "../../utils"
 
 const SingleOrder = () => {
     const { orderId } = useParams()
@@ -12,7 +13,7 @@ const SingleOrder = () => {
     const { data: orderData } = useQuery<Order>({
         queryKey: ["singleOrder", orderId],
         queryFn: async () => {
-            const queryString = new URLSearchParams({ fields: "cart,address,paymentStatus,orderStatus,paymentMode,customerId,total,tenantId,comment" }).toString()
+            const queryString = new URLSearchParams({ fields: "cart,address,paymentStatus,orderStatus,paymentMode,customerId,total,tenantId,comment,createdAt" }).toString()
 
             return getSingleOrder(orderId!, queryString).then(res => res.data)
         }
@@ -73,7 +74,39 @@ const SingleOrder = () => {
                 </Col>
                 <Col span={12}>
                     <Card title="Customer Details">
-                        Hello
+                        <Space size={"large"} direction="vertical">
+                            <Flex style={{ flexDirection: "column" }}>
+                                <Typography.Text type="secondary">Name</Typography.Text>
+                                <Typography.Text >{`${orderData?.customerId.firstName} ${orderData?.customerId.lastName}`}</Typography.Text>
+                            </Flex>
+
+                            <Flex style={{ flexDirection: "column" }}>
+                                <Typography.Text type="secondary">Address</Typography.Text>
+                                <Typography.Text>{orderData?.address}</Typography.Text>
+                            </Flex>
+
+                            <Flex style={{ flexDirection: "column" }}>
+                                <Typography.Text type="secondary">Payment Status</Typography.Text>
+                                <Typography.Text>{capitalize(orderData?.paymentStatus as string)}</Typography.Text>
+                            </Flex>
+                            <Flex style={{ flexDirection: "column" }}>
+                                <Typography.Text type="secondary">Order Status</Typography.Text>
+                                <Typography.Text>{capitalize(orderData?.orderStatus as string)}</Typography.Text>
+                            </Flex>
+                            <Flex style={{ flexDirection: "column" }}>
+                                <Typography.Text type="secondary">Total Price</Typography.Text>
+                                <Typography.Text>Rs.{orderData?.total}</Typography.Text>
+                            </Flex>
+                            <Flex style={{ flexDirection: "column" }}>
+                                <Typography.Text type="secondary">Order Time</Typography.Text>
+                                <Typography.Text>{new Date(orderData?.createdAt as string).toLocaleString()}</Typography.Text>
+                            </Flex>
+                            <Flex style={{ flexDirection: "column" }}>
+                                <Typography.Text type="secondary">Comment</Typography.Text>
+                                <Typography.Text>{orderData?.comment}</Typography.Text>
+                            </Flex>
+                        </Space>
+
                     </Card>
                 </Col>
             </Row>
