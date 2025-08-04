@@ -1,11 +1,35 @@
-import { Avatar, Breadcrumb, Button, Card, Col, Drawer, Flex, Form, Image, List, Row, Space, Spin, Table, Tag, theme, Typography } from "antd"
-import { LoadingOutlined, PlusOutlined, RightOutlined } from "@ant-design/icons"
-import React, { useEffect } from 'react'
+import { Avatar, Breadcrumb, Card, Col, Flex, List, Row, Select, Space, Tag, Typography } from "antd"
+import { RightOutlined } from "@ant-design/icons"
+import { useEffect } from 'react'
 import { Link, useParams } from "react-router-dom"
-import { useQuery } from "@tanstack/react-query"
-import { getSingleOrder } from "../../http/api"
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
+import { changeOrderStatus, getSingleOrder } from "../../http/api"
 import type { Order } from "../../types"
 import { capitalize } from "../../utils"
+import { ColorMapping } from "../../constants"
+
+const orderStatusOptions = [
+    {
+        value: "received",
+        label: "Received"
+    },
+    {
+        value: "confirmed",
+        label: "Confirmed"
+    },
+    {
+        value: "prepared",
+        label: "Prepared"
+    },
+    {
+        value: "out_for_delivery",
+        label: "Out For Delievry"
+    },
+    {
+        value: "delivered",
+        label: "Delivered"
+    },
+]
 
 const SingleOrder = () => {
     const { orderId } = useParams()
@@ -19,9 +43,29 @@ const SingleOrder = () => {
         }
     })
 
+    const queryClient = useQueryClient()
+
+    const { mutate: changeOrderStatusMutate } = useMutation({
+        mutationKey: ["changeOrderStatus"],
+        mutationFn: async (status: string) => {
+            await changeOrderStatus(orderId!, status)
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ["singleOrder"] })
+        }
+    })
+
     useEffect(() => {
         console.log("orderData", orderData);
     }, [orderData])
+
+    if (!orderData) {
+        return null
+    }
+
+    const handleOrderStatusValueChange = (value: string) => {
+        changeOrderStatusMutate(value)
+    }
 
     return (
         <>
@@ -40,22 +84,29 @@ const SingleOrder = () => {
                         }
                     ]}
                 />
-                {/* {isFetching && <Spin indicator={<LoadingOutlined style={{ fontSize: 25 }} spin />} />
-                }
-                {isError && <Typography.Text type="danger">{error?.message}</Typography.Text>} */}
+                <Space>
+                    <Typography.Text>Change order Status:</Typography.Text>
+                    <Select
+                        defaultValue={orderData?.orderStatus}
+                        style={{ width: 150 }}
+                        onChange={handleOrderStatusValueChange}
+                        options={orderStatusOptions}
+                    />
+                </Space>
+
             </Flex>
 
             <Row gutter={20}>
                 <Col span={12}>
-                    <Card title="Order Details">
+                    <Card title="Order Details" extra={<Tag bordered={false} color={ColorMapping[orderData?.orderStatus]}>{capitalize(orderData?.orderStatus as string || "Not defined")}</Tag>}>
                         <List
                             itemLayout="horizontal"
                             dataSource={orderData?.cart}
-                            renderItem={(item, index) => (
+                            renderItem={(item, _index) => (
                                 <List.Item>
                                     <List.Item.Meta
                                         avatar={<Avatar src={item.product.image} />}
-                                        title={<a href="https://ant.design">{item.product.name}</a>}
+                                        title={item.product.name}
                                         description={item.chosenConfig?.selectedToppings?.map(topping => topping.name).join(", ")}
                                     />
 
@@ -87,12 +138,13 @@ const SingleOrder = () => {
 
                             <Flex style={{ flexDirection: "column" }}>
                                 <Typography.Text type="secondary">Payment Status</Typography.Text>
-                                <Typography.Text>{capitalize(orderData?.paymentStatus as string)}</Typography.Text>
+                                <Typography.Text>{capitalize(orderData?.paymentStatus as string || "Not Defined")}</Typography.Text>
                             </Flex>
                             <Flex style={{ flexDirection: "column" }}>
                                 <Typography.Text type="secondary">Order Status</Typography.Text>
-                                <Typography.Text>{capitalize(orderData?.orderStatus as string)}</Typography.Text>
+                                <Typography.Text>{capitalize(orderData?.orderStatus as string || "Not Defined")}</Typography.Text>
                             </Flex>
+
                             <Flex style={{ flexDirection: "column" }}>
                                 <Typography.Text type="secondary">Total Price</Typography.Text>
                                 <Typography.Text>Rs.{orderData?.total}</Typography.Text>

@@ -56,3 +56,5 @@ export const deleteCoupon = async (data: createCouponData) => await api.delete(`
 export const getAllOrders = async (queryString: string) => await api.get(`${ORDER_SERVICE}/orders?${queryString}`)
 
 export const getSingleOrder = async (orderId: string, queryString: string) => await api.get(`${ORDER_SERVICE}/orders/${orderId}?${queryString}`)
+
+export const changeOrderStatus = async (orderId: string, status: string) => await api.patch(`${ORDER_SERVICE}/orders/change-status/${orderId}`, { status })

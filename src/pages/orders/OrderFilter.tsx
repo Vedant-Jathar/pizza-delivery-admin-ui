@@ -1,21 +1,28 @@
-import React from 'react'
-import { Card, Col, Form, Input, Row, Select, Space, Switch, Typography } from "antd"
+import { Card, Col, Form, Input, Row, Select } from "antd"
 import { useAuthStore } from '../../store'
 import { useQuery } from '@tanstack/react-query'
 import { getAllTenantsWithoutPagination } from '../../http/api'
 import type { Tenant } from '../../types'
+import { useEffect } from "react"
 
 const OrderFilter = () => {
 
     const { user } = useAuthStore()
 
-    const { data: tenants } = useQuery({
+    const { data: tenants, refetch: fetchTenants } = useQuery({
         queryKey: ["getTenantsList"],
         queryFn: async () => {
             return await getAllTenantsWithoutPagination()
-        }
+        },
+        enabled: false
     })
 
+    useEffect(() => {
+        if (user?.role === "admin") {
+            fetchTenants()
+        }
+    }, [fetchTenants, user?.role])
+    
     return (
         <Card style={{ margin: "20px 0" }}>
             <Row>
@@ -43,7 +50,7 @@ const OrderFilter = () => {
 
                     </Row>
                 </Col>
-              
+
             </Row>
         </Card>
     )
