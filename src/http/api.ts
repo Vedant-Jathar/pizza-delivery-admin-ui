@@ -1,3 +1,4 @@
+import OrderFilter from "../pages/orders/OrderFilter";
 import type { createCouponData, CreateTenantData, CreateUserData, credentials, UpdateUserData } from "../types";
 import api from "./client";
 
@@ -53,3 +54,5 @@ export const updateCoupon = async (data: createCouponData) => await api.patch(`$
 export const deleteCoupon = async (data: createCouponData) => await api.delete(`${ORDER_SERVICE}/coupons/${data._id}`)
 
 export const getAllOrders = async (queryString: string) => await api.get(`${ORDER_SERVICE}/orders?${queryString}`)
+
+export const getSingleOrder = async (orderId: string, queryString: string) => await api.get(`${ORDER_SERVICE}/orders/${orderId}?${queryString}`)

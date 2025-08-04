@@ -10,9 +10,7 @@ const PromoForm = () => {
         queryKey: ["getTenants"],
         queryFn: getAllTenantsWithoutPagination
     })
-
-
-
+    
     return (
         <>
             <Row>
