@@ -9,8 +9,33 @@ import { ColorMapping, PER_PAGE } from '../../constants'
 import OrderFilter from './OrderFilter'
 import type { FieldData } from 'rc-field-form/lib/interface'
 import { capitalize } from '../../utils'
+import { useAuthStore } from '../../store'
+import socket from '../../lib/socket'
 
 const Order = () => {
+
+    const { user } = useAuthStore()
+
+    useEffect(() => {
+        if (user?.tenant) {
+            socket.on("order-update", (data) => {
+                console.log("Data received:", data);
+            })
+
+            socket.on("join", (data) => {
+                console.log("User joined in:", data.roomId);
+            })
+
+            socket.emit("join", {
+                tenantId: user.tenant.id
+            })
+        }
+
+        return () => {
+            socket.off("join")
+            socket.off("order-update")
+        }
+    }, [user?.tenant])
 
     const [queryParams, setQueryParams] = useState({
         page: 1,
@@ -111,9 +136,7 @@ const Order = () => {
         }
     })
 
-    useEffect(() => {
-        console.log("orderData", orderData);
-    }, [orderData])
+ 
 
     const handleFieldsChange = (changedFields: FieldData[]) => {
         const mappedFields = (changedFields.map((item) => ({ [item.name[0]]: item.value }))).reduce((acc, item) => ({ ...acc, ...item }), {})

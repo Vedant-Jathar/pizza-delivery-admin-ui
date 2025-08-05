@@ -6,9 +6,8 @@ import type { Tenant } from '../../types'
 import { useEffect } from "react"
 
 const OrderFilter = () => {
-
     const { user } = useAuthStore()
-
+    
     const { data: tenants, refetch: fetchTenants } = useQuery({
         queryKey: ["getTenantsList"],
         queryFn: async () => {
