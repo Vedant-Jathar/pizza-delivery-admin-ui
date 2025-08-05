@@ -2,8 +2,8 @@ import React, { useEffect, useState } from 'react'
 import { Breadcrumb, Button, Drawer, Flex, Form, Image, Space, Spin, Table, Tag, theme, Typography } from "antd"
 import { LoadingOutlined, PlusOutlined, RightOutlined } from "@ant-design/icons"
 import { Link } from 'react-router-dom'
-import type { Order } from '../../types'
-import { useQuery } from '@tanstack/react-query'
+import { OrderEvents, PaymentMode, PaymentStatus, type Order } from '../../types'
+import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { getAllOrders } from '../../http/api'
 import { ColorMapping, PER_PAGE } from '../../constants'
 import OrderFilter from './OrderFilter'
@@ -11,15 +11,34 @@ import type { FieldData } from 'rc-field-form/lib/interface'
 import { capitalize } from '../../utils'
 import { useAuthStore } from '../../store'
 import socket from '../../lib/socket'
+import { message } from "antd"
+// import { message, contextHolder } from "antd"
 
 const Order = () => {
+    const [queryParams, setQueryParams] = useState({
+        page: 1,
+        limit: PER_PAGE
+    })
+
+    const [messageApi, contextHolder] = message.useMessage();
+
 
     const { user } = useAuthStore()
+
+    const queryClient = useQueryClient()
 
     useEffect(() => {
         if (user?.tenant) {
             socket.on("order-update", (data) => {
-                console.log("Data received:", data);
+                console.log("Order Updated Data:", data);
+                // if(data)
+                // queryClient.setQueryData(["getAllOrders", queryParams], (old: Order[]) => [data["message"], ...old])
+                console.log("socket-on order-update entered");
+
+                if ((data["event-type"] === OrderEvents.ORDER_CREATE && data["message"].paymentMode === PaymentMode.CASH) || (data["event-type"] === OrderEvents.PAYMENT_STATUS_UPDATE && data["message"].paymentStatus === PaymentStatus.PAID)) {
+                    queryClient.invalidateQueries({ queryKey: ["getAllOrders"] });
+                    messageApi.success("New Order Placed...")
+                }
             })
 
             socket.on("join", (data) => {
@@ -37,10 +56,7 @@ const Order = () => {
         }
     }, [user?.tenant])
 
-    const [queryParams, setQueryParams] = useState({
-        page: 1,
-        limit: PER_PAGE
-    })
+
 
     const orderTableColumns = [
         {
@@ -136,7 +152,7 @@ const Order = () => {
         }
     })
 
- 
+
 
     const handleFieldsChange = (changedFields: FieldData[]) => {
         const mappedFields = (changedFields.map((item) => ({ [item.name[0]]: item.value }))).reduce((acc, item) => ({ ...acc, ...item }), {})
@@ -145,6 +161,7 @@ const Order = () => {
 
     return (
         <>
+            {contextHolder}
             <Flex justify="space-between" style={{ marginBottom: "20px" }}>
                 <Breadcrumb
                     separator={<RightOutlined />}

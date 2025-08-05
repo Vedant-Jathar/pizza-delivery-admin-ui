@@ -32,6 +32,7 @@ const orderStatusOptions = [
 ]
 
 const SingleOrder = () => {
+
     const { orderId } = useParams()
 
     const { data: orderData } = useQuery<Order>({
@@ -54,10 +55,6 @@ const SingleOrder = () => {
             queryClient.invalidateQueries({ queryKey: ["singleOrder"] })
         }
     })
-
-    useEffect(() => {
-        console.log("orderData", orderData);
-    }, [orderData])
 
     if (!orderData) {
         return null
