@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from 'react'
-import { Breadcrumb, Button, Drawer, Flex, Form, Image, Space, Spin, Table, Tag, theme, Typography } from "antd"
-import { LoadingOutlined, PlusOutlined, RightOutlined } from "@ant-design/icons"
+import { useEffect, useState } from 'react'
+import { Breadcrumb, Flex, Form, Spin, Table, Tag, Typography } from "antd"
+import { LoadingOutlined, RightOutlined } from "@ant-design/icons"
 import { Link } from 'react-router-dom'
 import { OrderEvents, PaymentMode, PaymentStatus, type Order } from '../../types'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
@@ -54,9 +54,7 @@ const Order = () => {
             socket.off("join")
             socket.off("order-update")
         }
-    }, [user?.tenant])
-
-
+    }, [user?.tenant, messageApi, queryClient])
 
     const orderTableColumns = [
         {
