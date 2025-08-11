@@ -1,6 +1,5 @@
 import { Avatar, Breadcrumb, Card, Col, Flex, List, Row, Select, Space, Tag, Typography } from "antd"
 import { RightOutlined } from "@ant-design/icons"
-import { useEffect } from 'react'
 import { Link, useParams } from "react-router-dom"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { changeOrderStatus, getSingleOrder } from "../../http/api"
@@ -99,7 +98,7 @@ const SingleOrder = () => {
                         <List
                             itemLayout="horizontal"
                             dataSource={orderData?.cart}
-                            renderItem={(item, _index) => (
+                            renderItem={(item) => (
                                 <List.Item>
                                     <List.Item.Meta
                                         avatar={<Avatar src={item.product.image} />}

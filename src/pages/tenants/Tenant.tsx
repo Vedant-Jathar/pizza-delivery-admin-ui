@@ -12,7 +12,7 @@ import TenantForm from './forms/TenantForm'
 import { useForm } from 'antd/es/form/Form'
 import type { CreateTenantData, Tenant } from '../../types'
 
-const Tenant = () => {
+const TenantComp = () => {
 
     const [currentEditingTenant, setCurrentEditingTenant] = useState<Tenant | null>(null)
     const [tenantForm] = useForm()
@@ -195,4 +195,4 @@ const Tenant = () => {
     )
 }
 
-export default Tenant
+export default TenantComp

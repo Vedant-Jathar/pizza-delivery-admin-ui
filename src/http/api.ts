@@ -1,4 +1,3 @@
-import OrderFilter from "../pages/orders/OrderFilter";
 import type { createCouponData, CreateTenantData, CreateUserData, credentials, UpdateUserData } from "../types";
 import api from "./client";
 

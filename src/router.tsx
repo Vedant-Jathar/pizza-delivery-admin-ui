@@ -7,10 +7,10 @@ import Root from "./layouts/Root";
 import Products from "./pages/product/Products";
 import Promo from "./pages/promos/Promo";
 import Order from "./pages/orders/Order";
-import User from "./pages/user/User";
-import Tenant from "./pages/tenants/Tenant";
-import Topping from "./pages/toppings/Topping";
 import SingleOrder from "./pages/orders/SingleOrder";
+import UserComp from "./pages/user/User";
+import TenantComp from "./pages/tenants/Tenant";
+import ToppingCompr from "./pages/toppings/Topping";
 
 export const router = createBrowserRouter([
     {
@@ -27,11 +27,11 @@ export const router = createBrowserRouter([
                     },
                     {
                         path: "users",
-                        element: <User />
+                        element: <UserComp/>
                     },
                     {
                         path: "tenants",
-                        element: <Tenant />
+                        element: <TenantComp />
                     },
                     {
                         path: "products",
@@ -43,7 +43,7 @@ export const router = createBrowserRouter([
                     },
                     {
                         path: "toppings",
-                        element: <Topping />
+                        element: <ToppingCompr />
                     },
                     {
                         path: "orders",

@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { Breadcrumb, Flex, Form, Spin, Table, Tag, Typography } from "antd"
 import { LoadingOutlined, RightOutlined } from "@ant-design/icons"
 import { Link } from 'react-router-dom'
-import { OrderEvents, PaymentMode, PaymentStatus, type Order } from '../../types'
+import { OrderEvents, PaymentMode, PaymentStatus, type order } from '../../types'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { getAllOrders } from '../../http/api'
 import { ColorMapping, PER_PAGE } from '../../constants'
@@ -61,7 +61,7 @@ const Order = () => {
             title: "Order Id",
             dataIndex: "_id",
             key: "_id",
-            render: (_text: string, record: Order) => {
+            render: (_text: string, record: order) => {
                 return <Typography.Text>{record._id}</Typography.Text>
             }
         },
@@ -70,7 +70,7 @@ const Order = () => {
             dataIndex: "customerId._id",
             key: "customerId._id",
             align: "center",
-            render: (_text: string, record: Order) => {
+            render: (_text: string, record: order) => {
                 return (<p>{`${record.customerId?.firstName} ${record.customerId?.lastName}`}</p>)
             }
         },
@@ -78,7 +78,7 @@ const Order = () => {
             title: "Address",
             dataIndex: "address",
             key: "address",
-            render: (_text: string, record: Order) => {
+            render: (_text: string, record: order) => {
                 return (<p>{record.address}</p>)
             }
         },
@@ -86,7 +86,7 @@ const Order = () => {
             title: "Comment",
             dataIndex: "comment",
             key: "_id",
-            render: (_text: string, record: Order) => {
+            render: (_text: string, record: order) => {
                 return (<p>{record.comment}</p>)
             }
         },
@@ -95,7 +95,7 @@ const Order = () => {
             dataIndex: "orderStatus",
             key: "_id",
             align: "center",
-            render: (_text: string, record: Order) => {
+            render: (_text: string, record: order) => {
                 return <Tag bordered={false} color={ColorMapping[record.orderStatus]}>{capitalize(record.orderStatus)}</Tag>
             }
         },
@@ -104,7 +104,7 @@ const Order = () => {
             dataIndex: "paymentStatus",
             key: "_id",
             align: "center",
-            render: (_text: string, record: Order) => {
+            render: (_text: string, record: order) => {
                 return <Typography.Text>{record.paymentStatus.toUpperCase()}</Typography.Text>
             }
         },
@@ -113,7 +113,7 @@ const Order = () => {
             dataIndex: "total",
             key: "_id",
             align: "center",
-            render: (_text: string, record: Order) => {
+            render: (_text: string, record: order) => {
                 return <Typography.Text>Rs.{record.total}</Typography.Text>
             }
         },
@@ -123,7 +123,7 @@ const Order = () => {
             dataIndex: "createdAt",
             key: "_id",
             align: "center",
-            render: (_text: string, record: Order) => {
+            render: (_text: string, record: order) => {
                 const date = new Date(record.createdAt).toLocaleString()
                 return <Typography.Text>{date}</Typography.Text>
             }
@@ -134,7 +134,7 @@ const Order = () => {
             dataIndex: "createdAt",
             key: "_id",
             align: "center",
-            render: (_text: string, record: Order) => {
+            render: (_text: string, record: order) => {
                 return <Link to={`/orders/${record._id}`}>See Details</Link>
             }
         },

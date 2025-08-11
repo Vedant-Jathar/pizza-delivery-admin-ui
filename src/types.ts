@@ -184,23 +184,23 @@ export interface Topping {
     isPublished: boolean;
 }
 
-export enum OrderStatus {
-    RECEIVED = "received",
-    CONFIRMED = "confirmed",
-    PREPARED = "prepared",
-    OUT_FOR_DELIVERY = "out_for_delivery",
-    DELIVERED = "delivered"
+export const OrderStatus = {
+    RECEIVED :"received",
+    CONFIRMED : "confirmed",
+    PREPARED : "prepared",
+    OUT_FOR_DELIVERY : "out_for_delivery",
+    DELIVERED : "delivered"
 }
 
-export enum PaymentMode {
-    CARD = "card",
-    CASH = "cash",
+export const PaymentMode = {
+    CARD: "card",
+    CASH: "cash",
 }
 
-export enum PaymentStatus {
-    PENDING = "pending",
-    PAID = "paid",
-    FAILED = "failed"
+export const PaymentStatus = {
+    PENDING: "pending",
+    PAID: "paid",
+    FAILED: "failed"
 }
 
 export interface CartItem {
@@ -229,7 +229,7 @@ export interface Customer {
     addresses?: Address[]
 }
 
-export interface Order {
+export interface order {
     _id: string,
     cart: CartItem[],
     customerId: Customer,
@@ -247,8 +247,8 @@ export interface Order {
     createdAt: string
 }
 
-export enum OrderEvents {
-    ORDER_CREATE = "ORDER_CREATE",
-    PAYMENT_STATUS_UPDATE = "PAYMENT_STATUS_UPDATE",
-    ORDER_STATUS_UPDATE = "ORDER_STATUS_UPDATE"
+export const OrderEvents = {
+    ORDER_CREATE: "ORDER_CREATE",
+    PAYMENT_STATUS_UPDATE: "PAYMENT_STATUS_UPDATE",
+    ORDER_STATUS_UPDATE: "ORDER_STATUS_UPDATE"
 }

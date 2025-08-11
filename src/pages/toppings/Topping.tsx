@@ -1,13 +1,12 @@
-import React from 'react'
-import { Breadcrumb, Button, Drawer, Flex, Form, Image, Space, Spin, Table, Tag, theme, Typography } from "antd"
-import { LoadingOutlined, PlusOutlined, RightOutlined } from "@ant-design/icons"
+import { Breadcrumb, Flex, Image, Space, Spin, Table, Typography } from "antd"
+import { LoadingOutlined, RightOutlined } from "@ant-design/icons"
 
 import { useQuery } from '@tanstack/react-query'
 import { getToppings } from '../../http/api'
 import { Link } from 'react-router-dom'
 import type { Topping } from '../../types'
 
-const Topping = () => {
+const ToppingComp = () => {
 
     const { data: toppings, isFetching, isError, error } = useQuery({
         queryKey: ["getToppings"],
@@ -131,4 +130,4 @@ const Topping = () => {
     )
 }
 
-export default Topping
+export default ToppingComp

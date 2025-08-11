@@ -12,7 +12,7 @@ import { PER_PAGE } from "../../constants"
 import type { FieldData } from 'rc-field-form/lib/interface';
 import { debounce } from "lodash"
 
-const User = () => {
+const UserComp = () => {
     
     const [currentEditingUser, setCurrentEditingUser] = useState<User | null>(null)
 
@@ -100,7 +100,7 @@ const User = () => {
             title: "Name",
             dataIndex: "firstName",
             key: 'firstName',
-            render: (text: string, record: User) => <Link to="/xyz">{record.firstName + " " + record.lastName}</Link>
+            render: (_text: string, record: User) => <Link to="/xyz">{record.firstName + " " + record.lastName}</Link>
         },
 
         {
@@ -117,14 +117,14 @@ const User = () => {
             title: "Restaurant",
             dataIndex: "tenant",
             key: "tenant",
-            render: (text: string, record: User) => {
+            render: (_text: string, record: User) => {
                 return <div>{record.tenant?.name}</div>
             }
         },
         {
             title: "Actions",
             key: "edit",
-            render: (text: string, record: User) => {
+            render: (_text: string, record: User) => {
                 return (
                     <Button
                         type="link"
@@ -237,4 +237,4 @@ const User = () => {
     )
 }
 
-export default User
+export default UserComp
