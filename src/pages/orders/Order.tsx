@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, type JSX } from 'react'
 import { Breadcrumb, Flex, Form, Spin, Table, Tag, Typography } from "antd"
 import { LoadingOutlined, RightOutlined } from "@ant-design/icons"
 import { Link } from 'react-router-dom'
@@ -12,6 +12,7 @@ import { capitalize } from '../../utils'
 import { useAuthStore } from '../../store'
 import socket from '../../lib/socket'
 import { message } from "antd"
+import type { ColumnsType } from 'antd/es/table'
 // import { message, contextHolder } from "antd"
 
 const Order = () => {
@@ -56,12 +57,12 @@ const Order = () => {
         }
     }, [user?.tenant, messageApi, queryClient])
 
-    const orderTableColumns = [
+    const orderTableColumns: ColumnsType<order> = [
         {
             title: "Order Id",
             dataIndex: "_id",
             key: "_id",
-            render: (_text: string, record: order) => {
+            render: (_text: string, record: order): JSX.Element => {
                 return <Typography.Text>{record._id}</Typography.Text>
             }
         },
@@ -70,7 +71,7 @@ const Order = () => {
             dataIndex: "customerId._id",
             key: "customerId._id",
             align: "center",
-            render: (_text: string, record: order) => {
+            render: (_text: string, record: order): JSX.Element => {
                 return (<p>{`${record.customerId?.firstName} ${record.customerId?.lastName}`}</p>)
             }
         },
@@ -78,42 +79,42 @@ const Order = () => {
             title: "Address",
             dataIndex: "address",
             key: "address",
-            render: (_text: string, record: order) => {
+            render: (_text: string, record: order): JSX.Element => {
                 return (<p>{record.address}</p>)
             }
         },
         {
             title: "Comment",
             dataIndex: "comment",
-            key: "_id",
-            render: (_text: string, record: order) => {
+            key: "comment",
+            render: (_text: string, record: order): JSX.Element => {
                 return (<p>{record.comment}</p>)
             }
         },
         {
             title: "Order Status",
             dataIndex: "orderStatus",
-            key: "_id",
+            key: "orderStatus",
             align: "center",
-            render: (_text: string, record: order) => {
+            render: (_text: string, record: order): JSX.Element => {
                 return <Tag bordered={false} color={ColorMapping[record.orderStatus]}>{capitalize(record.orderStatus)}</Tag>
             }
         },
         {
             title: "Payment Status",
             dataIndex: "paymentStatus",
-            key: "_id",
+            key: "paymentStatus",
             align: "center",
-            render: (_text: string, record: order) => {
+            render: (_text: string, record: order): JSX.Element => {
                 return <Typography.Text>{record.paymentStatus.toUpperCase()}</Typography.Text>
             }
         },
         {
             title: "Total Price",
             dataIndex: "total",
-            key: "_id",
+            key: "total",
             align: "center",
-            render: (_text: string, record: order) => {
+            render: (_text: string, record: order): JSX.Element => {
                 return <Typography.Text>Rs.{record.total}</Typography.Text>
             }
         },
@@ -121,9 +122,9 @@ const Order = () => {
         {
             title: "Date and Time",
             dataIndex: "createdAt",
-            key: "_id",
+            key: "createdAt",
             align: "center",
-            render: (_text: string, record: order) => {
+            render: (_text: string, record: order): JSX.Element => {
                 const date = new Date(record.createdAt).toLocaleString()
                 return <Typography.Text>{date}</Typography.Text>
             }
@@ -132,9 +133,9 @@ const Order = () => {
         {
             title: "Details",
             dataIndex: "createdAt",
-            key: "_id",
+            key: "createdAt",
             align: "center",
-            render: (_text: string, record: order) => {
+            render: (_text: string, record: order): JSX.Element => {
                 return <Link to={`/orders/${record._id}`}>See Details</Link>
             }
         },

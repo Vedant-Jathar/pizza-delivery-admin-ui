@@ -11,6 +11,7 @@ import PromoForm from './forms/PromoForm'
 import useMessage from 'antd/es/message/useMessage'
 import type { createCouponData } from '../../types'
 import dayjs from 'dayjs'
+import type { ColumnsType } from 'antd/es/table'
 
 const Promo = () => {
 
@@ -54,7 +55,7 @@ const Promo = () => {
     }
   })
 
-  const promosTableColumns = [
+  const promosTableColumns: ColumnsType<createCouponData> = [
     {
       title: <div style={{ textAlign: 'center' }}>Name</div>,
       dataIndex: "title",

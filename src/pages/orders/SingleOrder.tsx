@@ -3,7 +3,7 @@ import { RightOutlined } from "@ant-design/icons"
 import { Link, useParams } from "react-router-dom"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { changeOrderStatus, getSingleOrder } from "../../http/api"
-import type { Order } from "../../types"
+import type { order } from "../../types"
 import { capitalize } from "../../utils"
 import { ColorMapping } from "../../constants"
 
@@ -34,7 +34,7 @@ const SingleOrder = () => {
 
     const { orderId } = useParams()
 
-    const { data: orderData } = useQuery<Order>({
+    const { data: orderData } = useQuery<order>({
         queryKey: ["singleOrder", orderId],
         queryFn: async () => {
             const queryString = new URLSearchParams({ fields: "cart,address,paymentStatus,orderStatus,paymentMode,customerId,total,tenantId,comment,createdAt" }).toString()

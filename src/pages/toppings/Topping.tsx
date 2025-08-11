@@ -5,6 +5,8 @@ import { useQuery } from '@tanstack/react-query'
 import { getToppings } from '../../http/api'
 import { Link } from 'react-router-dom'
 import type { Topping } from '../../types'
+import type { JSX } from "react"
+import type { ColumnsType } from "antd/es/table"
 
 const ToppingComp = () => {
 
@@ -13,13 +15,13 @@ const ToppingComp = () => {
         queryFn: getToppings
     })
 
-    const toppingTableColumns = [
+    const toppingTableColumns: ColumnsType<Topping> = [
         {
             title: "Topping Name",
             dataIndex: "name",
             key: 'name',
             width: 200,
-            render: (_: string, record: Topping) => {
+            render: (_: string, record: Topping): JSX.Element => {
                 return (
                     <Space>
                         <Image style={{ borderRadius: "10px" }} width={60} src={record.image} />
