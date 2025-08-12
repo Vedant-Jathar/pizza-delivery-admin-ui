@@ -35,7 +35,7 @@ const UserComp = () => {
 
     const queryClient = useQueryClient()
 
-    const { mutate: createUserMutate, isPending: isCreateUserPending } = useMutation({
+    const { mutate: createUserMutate, isPending: isCreateUserPending, error: creatUserError } = useMutation({
         mutationKey: ['createUser'],
         mutationFn: createUser,
         onSuccess: () => {
@@ -43,10 +43,13 @@ const UserComp = () => {
             queryClient.invalidateQueries({ queryKey: ["getAllUsers", queryParams] })
             setDrawerOpen(false)
             form.resetFields()
+        },
+        onError: () => {
+            messageApi.success(`Error creating user:${creatUserError?.message}`)
         }
     })
 
-    const { mutate: updateUserMutate, isPending: isUpdateUserPending } = useMutation({
+    const { mutate: updateUserMutate, isPending: isUpdateUserPending, error: updateUserError } = useMutation({
         mutationKey: ["updateUser"],
         mutationFn: updateUser,
         onSuccess: () => {
@@ -55,20 +58,21 @@ const UserComp = () => {
             setDrawerOpen(false)
             setCurrentEditingUser(null)
             form.resetFields()
+        },
+        onError: () => {
+            messageApi.success(`Error updating user:${updateUserError?.message}`)
         }
     })
 
     const handleSubmit = async () => {
         await form.validateFields()
         if (currentEditingUser) {
-            await updateUserMutate({ ...form.getFieldsValue(), id: currentEditingUser.id })
+            updateUserMutate({ ...form.getFieldsValue(), id: currentEditingUser.id })
             setCurrentEditingUser(null)
         }
         else {
-            await createUserMutate(form.getFieldsValue())
+            createUserMutate(form.getFieldsValue())
         }
-        form.resetFields()
-        setDrawerOpen(false)
     }
 
     const onFiltersFieldChange = (changedFields: FieldData[]) => {
@@ -98,7 +102,7 @@ const UserComp = () => {
         placeholderData: keepPreviousData
     })
 
-    const { mutate: deleteUserMutate } = useMutation({
+    const { mutate: deleteUserMutate, error: deleteUserError } = useMutation({
         mutationKey: ["deleteUser"],
         mutationFn: async (id: number) => {
             await deleteUser(id)
@@ -106,6 +110,9 @@ const UserComp = () => {
         onSuccess: async () => {
             messageApi.success("User deleted successfully")
             queryClient.invalidateQueries({ queryKey: ["getAllUsers", queryParams] })
+        },
+        onError: () => {
+            messageApi.success(`Error deleting user:${deleteUserError?.message}`)
         }
     })
 

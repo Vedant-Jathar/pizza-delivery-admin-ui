@@ -44,7 +44,7 @@ const TenantComp = () => {
         },
         onSuccess: () => {
             messageApi.success("Tenant created successfully")
-            queryClient.invalidateQueries({ queryKey: ["getTenants", queryParams] })
+            queryClient.invalidateQueries({ queryKey: ["getTenants"], exact: false })
             setDrawerOpen(false)
             tenantForm.resetFields()
         }
@@ -57,7 +57,7 @@ const TenantComp = () => {
         },
         onSuccess: () => {
             messageApi.success("Tenant updated successfully")
-            queryClient.invalidateQueries({ queryKey: ["getTenants", queryParams] })
+            queryClient.invalidateQueries({ queryKey: ["getTenants"], exact: false })
             setDrawerOpen(false)
             setCurrentEditingTenant(null)
             tenantForm.resetFields()
@@ -71,7 +71,7 @@ const TenantComp = () => {
         },
         onSuccess: async () => {
             messageApi.success("User deleted successfully")
-            queryClient.invalidateQueries({ queryKey: ["getTenants", queryParams] })
+            queryClient.invalidateQueries({ queryKey: ["getTenants"], exact: false })
         }
     })
 
@@ -136,13 +136,11 @@ const TenantComp = () => {
         await tenantForm.validateFields()
         const data = tenantForm.getFieldsValue()
         if (currentEditingTenant) {
-            await updateTenantMutate(data)
+            updateTenantMutate(data)
         }
         else {
-            await createTenantMutate(data)
+            createTenantMutate(data)
         }
-        setCurrentEditingTenant(null)
-        tenantForm.resetFields()
     }
 
     return (

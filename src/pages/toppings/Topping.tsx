@@ -98,6 +98,7 @@ const ToppingComp = () => {
                         onClick={() => {
                             setDrawerOpen(true)
                             setCurrentEditingTopping(record)
+                            toppingForm.setFieldsValue({ ...record })
                         }}
                     >Edit</Button>
                 )
@@ -181,10 +182,10 @@ const ToppingComp = () => {
 
         if (currentEditingTopping) {
             formData.append("_id", toppingForm.getFieldValue("_id"))
-            await toppingMutate(formData)
+            toppingMutate(formData)
             return
         } else {
-            await toppingMutate(formData)
+            toppingMutate(formData)
         }
     }
 
@@ -257,7 +258,9 @@ const ToppingComp = () => {
                 open={drawerOpen}
                 onClose={() => {
                     toppingForm.resetFields()
-                    if (currentEditingTopping) setCurrentEditingTopping(null)
+                    if (currentEditingTopping) {
+                        setCurrentEditingTopping(null)
+                    }
                     toppingForm.resetFields()
                     setDrawerOpen(false)
                 }}
@@ -265,10 +268,11 @@ const ToppingComp = () => {
                 destroyOnHidden={true}
                 extra={
                     <Space>
-
                         <Button onClick={() => {
                             toppingForm.resetFields()
-                            if (currentEditingTopping) setCurrentEditingTopping(null)
+                            if (currentEditingTopping) {
+                                setCurrentEditingTopping(null)
+                            }
                             setDrawerOpen(false)
                         }}>Cancel</Button>
 

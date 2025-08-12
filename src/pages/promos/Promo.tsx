@@ -34,7 +34,7 @@ const Promo = () => {
     }
   })
 
-  const { mutate: updateCouponMutate } = useMutation({
+  const { mutate: updateCouponMutate, isPending: updateCouponPending } = useMutation({
     mutationKey: ["updateCoupon"],
     mutationFn: updateCoupon,
     onSuccess: async () => {
@@ -242,6 +242,7 @@ const Promo = () => {
             <Button
               disabled={createCouponPending}
               type="primary"
+              loading={createCouponPending || updateCouponPending}
               onClick={handleSubmit}>
               {currentEditingPromo ? "Update" : "Submit"}
             </Button>

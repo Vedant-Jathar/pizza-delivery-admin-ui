@@ -22,8 +22,8 @@ const ToppingForm = () => {
         <>
             <Row>
                 <Col span={24}>
-                    <Space direction="vertical" size={"large"}>
-                        <Card title="Topping Info">
+                    <Space direction="vertical" size={"large"} style={{ width: "100%" }}>
+                        <Card style={{ width: "100%" }} title="Topping Info">
                             <Row gutter={20}>
                                 <Col span={24}>
                                     <Form.Item label="Topping name:" name="name" rules={
@@ -51,7 +51,7 @@ const ToppingForm = () => {
                                 </Col>
                             </Row>
                         </Card>
-                        <Card title="Image Info">
+                        <Card style={{ width: "100%" }} title="Image Info">
                             <Row gutter={20}>
                                 <Col span={24}>
                                     <ToppingImage imageUri={imageUri} />
@@ -59,7 +59,7 @@ const ToppingForm = () => {
 
                             </Row>
                         </Card>
-                        {user?.role === "admin" && <Card title="Restaurant Info">
+                        {user?.role === "admin" && <Card style={{ width: "100%" }} title="Restaurant Info">
                             <Row gutter={20}>
                                 <Col span={24}>
                                     <Form.Item label="" name="tenantId" rules={[
@@ -82,7 +82,7 @@ const ToppingForm = () => {
                             </Row>
                         </Card>}
 
-                        <Card title="Other properties">
+                        <Card style={{ width: "100%" }} title="Other properties">
                             <Row gutter={20}>
                                 <Col span={24}>
                                     <Space>
