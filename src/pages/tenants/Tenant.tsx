@@ -71,7 +71,7 @@ const TenantComp = () => {
         },
         onSuccess: async () => {
             messageApi.success("User deleted successfully")
-            queryClient.invalidateQueries({ queryKey: ["getAllUsers", queryParams] })
+            queryClient.invalidateQueries({ queryKey: ["getTenants", queryParams] })
         }
     })
 

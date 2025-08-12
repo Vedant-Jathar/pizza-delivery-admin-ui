@@ -46,6 +46,20 @@ export const updateProductById = (formData: FormData) => api.put(`${CATALOG_SERV
 
 export const deleteProduct = async (id: string) => await api.delete(`${CATALOG_SERVICE}/products/${id}`)
 
+export const createTopping = async (formData: FormData) => await api.post(`${CATALOG_SERVICE}/toppings`, formData, {
+    headers: {
+        "Content-Type": "multipart/formdata"
+    }
+})
+
+export const updateToppingById = (formData: FormData) => api.put(`${CATALOG_SERVICE}/toppings/${formData.get("_id")}`, formData, {
+    headers: {
+        "Content-Type": "multipart/formdata"
+    }
+})
+
+export const deleteTopping = async (id: string) => await api.delete(`${CATALOG_SERVICE}/toppings/${id}`)
+
 export const getToppings = async () => await api.get(`${CATALOG_SERVICE}/toppings/all`)
 
 // Order Service:

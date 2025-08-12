@@ -121,7 +121,10 @@ const Promo = () => {
         <Button
           type='link'
           onClick={() => {
-            deleteCouponMutate(record)
+            const confirmed = window.confirm("Are you sure you want to delete?");
+            if (confirmed) {
+              deleteCouponMutate(record)
+            }
           }}
         ><DeleteOutlined /></Button>
     },

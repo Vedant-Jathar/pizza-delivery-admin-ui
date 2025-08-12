@@ -10,7 +10,7 @@ import Order from "./pages/orders/Order";
 import SingleOrder from "./pages/orders/SingleOrder";
 import UserComp from "./pages/user/User";
 import TenantComp from "./pages/tenants/Tenant";
-import ToppingCompr from "./pages/toppings/Topping";
+import ToppingComp from "./pages/toppings/Topping";
 
 export const router = createBrowserRouter([
     {
@@ -43,7 +43,7 @@ export const router = createBrowserRouter([
                     },
                     {
                         path: "toppings",
-                        element: <ToppingCompr />
+                        element: <ToppingComp />
                     },
                     {
                         path: "orders",
