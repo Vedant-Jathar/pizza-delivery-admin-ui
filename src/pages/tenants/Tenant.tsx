@@ -4,7 +4,7 @@ import TenantFilter from './TenantFilter'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { createTenant, getAllTenants, updateTenant } from '../../http/api'
 import { useState } from 'react'
-import { PlusOutlined, RightOutlined } from "@ant-design/icons"
+import { LoadingOutlined, PlusOutlined, RightOutlined } from "@ant-design/icons"
 import { useAuthStore } from '../../store'
 import { PER_PAGE } from '../../constants'
 import type { FieldData } from 'rc-field-form/lib/interface';
@@ -42,7 +42,7 @@ const TenantComp = () => {
         },
         onSuccess: () => {
             console.log("Tenant created successfully");
-            queryClient.invalidateQueries({ queryKey: ['getTenants'] })
+            queryClient.invalidateQueries({ queryKey: ["getTenants", queryParams] })
         }
     })
 
@@ -52,7 +52,7 @@ const TenantComp = () => {
             updateTenant(data, currentEditingTenant!.id)
         },
         onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ['getTenants'] })
+            queryClient.invalidateQueries({ queryKey: ["getTenants", queryParams] })
         }
     })
 
@@ -182,7 +182,10 @@ const TenantComp = () => {
                         >Cancel</Button>
                         <Button
                             type="primary"
-                            onClick={handleSubmit}>{currentEditingTenant ? "Update" : "Submit"}</Button>
+                            onClick={handleSubmit}
+                            loading={createTenantPending || updateTenantPending}>
+                            {currentEditingTenant ? "Update" : "Submit"}
+                        </Button>
                     </Space>
                 }
             >

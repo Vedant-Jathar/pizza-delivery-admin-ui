@@ -5,7 +5,7 @@ import { createUser, deleteUser, getAllUsers, updateUser } from "../../http/api"
 import type { mappedFields, User } from '../../types'
 import { useAuthStore } from "../../store"
 import UserFilter from "./UserFilter"
-import { useMemo, useState } from "react"
+import { useMemo, useState, type JSX } from "react"
 import { DeleteOutlined, LoadingOutlined, PlusOutlined, RightOutlined } from "@ant-design/icons"
 import UserForm from './forms/UserForm'
 import { PER_PAGE } from "../../constants"
@@ -153,8 +153,8 @@ const UserComp = () => {
         },
         {
             title: "Delete",
-            align: "center",
-            render: (_: string, record: User) =>
+            key: "delete",
+            render: (_: string, record: User): JSX.Element =>
                 <Button
                     type='link'
                     onClick={() => {
