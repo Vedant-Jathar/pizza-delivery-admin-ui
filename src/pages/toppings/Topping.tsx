@@ -1,5 +1,5 @@
 import { Breadcrumb, Button, Drawer, Flex, Form, Image, Space, Spin, Table, Tag, theme, Typography } from "antd"
-import { DeleteOutlined, LoadingOutlined, RightOutlined } from "@ant-design/icons"
+import { DeleteOutlined, LoadingOutlined, PlusOutlined, RightOutlined } from "@ant-design/icons"
 
 import { keepPreviousData, useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { createTopping, deleteTopping, getToppings, updateToppingById } from '../../http/api'
@@ -13,6 +13,7 @@ import ToppingForm from "./forms/ToppingForm"
 import { useAuthStore } from "../../store"
 import { makeFormData } from "../helper"
 import { format } from "date-fns"
+import ToppingFilter from "../promos/PromoFilter"
 
 const ToppingComp = () => {
 
@@ -214,6 +215,18 @@ const ToppingComp = () => {
                 }
                 {isError && <Typography.Text type="danger">{error?.message}</Typography.Text>}
             </Flex>
+
+            <Form>
+                <ToppingFilter>
+                    <Button
+                        type='primary'
+                        icon={<PlusOutlined />}
+                        onClick={() => setDrawerOpen(true)}
+                    >
+                        Add Topping
+                    </Button>
+                </ToppingFilter>
+            </Form>
 
             <Table
                 columns={toppingTableColumns}
