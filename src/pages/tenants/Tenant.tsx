@@ -4,7 +4,7 @@ import TenantFilter from './TenantFilter'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { createTenant, getAllTenants, updateTenant } from '../../http/api'
 import { useState } from 'react'
-import { LoadingOutlined, PlusOutlined, RightOutlined } from "@ant-design/icons"
+import { PlusOutlined, RightOutlined } from "@ant-design/icons"
 import { useAuthStore } from '../../store'
 import { PER_PAGE } from '../../constants'
 import type { FieldData } from 'rc-field-form/lib/interface';
