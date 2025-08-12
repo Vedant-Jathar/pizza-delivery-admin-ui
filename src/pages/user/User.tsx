@@ -68,7 +68,6 @@ const UserComp = () => {
         await form.validateFields()
         if (currentEditingUser) {
             updateUserMutate({ ...form.getFieldsValue(), id: currentEditingUser.id })
-            setCurrentEditingUser(null)
         }
         else {
             createUserMutate(form.getFieldsValue())

@@ -40,10 +40,10 @@ const TenantComp = () => {
     const { mutate: createTenantMutate, isPending: isCreateTenantPending } = useMutation({
         mutationKey: ['createTenant'],
         mutationFn: async (data: CreateTenantData) => {
-            createTenant(data)
+            await createTenant(data)
         },
         onSuccess: () => {
-            messageApi.success("Tenant created successfully")
+            messageApi.success("Restaurant created successfully")
             queryClient.invalidateQueries({ queryKey: ["getTenants"], exact: false })
             setDrawerOpen(false)
             tenantForm.resetFields()
@@ -53,10 +53,10 @@ const TenantComp = () => {
     const { mutate: updateTenantMutate, isPending: isUpdateTenantPending } = useMutation({
         mutationKey: ["updateTenant"],
         mutationFn: async (data: Tenant) => {
-            updateTenant(data, currentEditingTenant!.id)
+            await updateTenant(data, currentEditingTenant!.id)
         },
         onSuccess: () => {
-            messageApi.success("Tenant updated successfully")
+            messageApi.success("Restaurant updated successfully")
             queryClient.invalidateQueries({ queryKey: ["getTenants"], exact: false })
             setDrawerOpen(false)
             setCurrentEditingTenant(null)
@@ -70,7 +70,7 @@ const TenantComp = () => {
             await deleteTenant(id)
         },
         onSuccess: async () => {
-            messageApi.success("User deleted successfully")
+            messageApi.success("Restaurant deleted successfully")
             queryClient.invalidateQueries({ queryKey: ["getTenants"], exact: false })
         }
     })

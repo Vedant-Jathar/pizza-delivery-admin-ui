@@ -52,7 +52,7 @@ export const createTopping = async (formData: FormData) => await api.post(`${CAT
     }
 })
 
-export const updateToppingById = (formData: FormData) => api.put(`${CATALOG_SERVICE}/toppings/${formData.get("_id")}`, formData, {
+export const updateToppingById = (formData: FormData) => api.patch(`${CATALOG_SERVICE}/toppings/${formData.get("_id")}`, formData, {
     headers: {
         "Content-Type": "multipart/formdata"
     }
