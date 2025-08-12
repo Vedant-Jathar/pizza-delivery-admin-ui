@@ -35,25 +35,30 @@ const UserComp = () => {
 
     const queryClient = useQueryClient()
 
-    const { mutate: createUserMutate } = useMutation({
+    const { mutate: createUserMutate, isPending: isCreateUserPending } = useMutation({
         mutationKey: ['createUser'],
         mutationFn: createUser,
         onSuccess: () => {
             messageApi.success("User created successfully")
             queryClient.invalidateQueries({ queryKey: ["getAllUsers", queryParams] })
+            setDrawerOpen(false)
+            form.resetFields()
         }
     })
 
-    const { mutate: updateUserMutate } = useMutation({
+    const { mutate: updateUserMutate, isPending: isUpdateUserPending } = useMutation({
         mutationKey: ["updateUser"],
         mutationFn: updateUser,
         onSuccess: () => {
             messageApi.success("User updated successfully")
             queryClient.invalidateQueries({ queryKey: ["getAllUsers", queryParams] })
+            setDrawerOpen(false)
+            setCurrentEditingUser(null)
+            form.resetFields()
         }
     })
 
-    const handleChange = async () => {
+    const handleSubmit = async () => {
         await form.validateFields()
         if (currentEditingUser) {
             await updateUserMutate({ ...form.getFieldsValue(), id: currentEditingUser.id })
@@ -158,9 +163,13 @@ const UserComp = () => {
                 <Button
                     type='link'
                     onClick={() => {
-                        deleteUserMutate(record.id)
+                        const confirmed = window.confirm("Are you sure you want to delete?");
+                        if (confirmed) {
+                            deleteUserMutate(record.id)
+                        }
                     }}
-                ><DeleteOutlined /></Button>
+                ><DeleteOutlined />
+                </Button>
         },
     ]
 
@@ -251,7 +260,7 @@ const UserComp = () => {
                                 setCurrentEditingUser(null)
                             }
                         }}>Cancel</Button>
-                        <Button type="primary" onClick={handleChange}>{currentEditingUser ? "Update" : "Submit"}</Button>
+                        <Button type="primary" onClick={handleSubmit} loading={isCreateUserPending || isUpdateUserPending}>{currentEditingUser ? "Update" : "Submit"}</Button>
                     </Space>
                 }
             >

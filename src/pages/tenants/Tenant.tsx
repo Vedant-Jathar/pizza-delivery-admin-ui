@@ -2,19 +2,21 @@ import { Breadcrumb, Button, Drawer, Form, Space, Table } from 'antd'
 import { Link, Navigate } from 'react-router-dom'
 import TenantFilter from './TenantFilter'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { createTenant, getAllTenants, updateTenant } from '../../http/api'
-import { useState } from 'react'
-import { PlusOutlined, RightOutlined } from "@ant-design/icons"
+import { createTenant, deleteTenant, getAllTenants, updateTenant } from '../../http/api'
+import { useState, type JSX } from 'react'
+import { DeleteOutlined, PlusOutlined, RightOutlined } from "@ant-design/icons"
 import { useAuthStore } from '../../store'
 import { PER_PAGE } from '../../constants'
 import type { FieldData } from 'rc-field-form/lib/interface';
 import TenantForm from './forms/TenantForm'
 import { useForm } from 'antd/es/form/Form'
 import type { CreateTenantData, Tenant } from '../../types'
+import useMessage from 'antd/es/message/useMessage'
 
 const TenantComp = () => {
 
     const [currentEditingTenant, setCurrentEditingTenant] = useState<Tenant | null>(null)
+    const [messageApi, contextHolder] = useMessage()
     const [tenantForm] = useForm()
     const [queryParams, setQueryParams] = useState({
         currentPage: 1,
@@ -35,24 +37,41 @@ const TenantComp = () => {
 
     const queryClient = useQueryClient()
 
-    const { mutate: createTenantMutate, isPending: createTenantPending } = useMutation({
+    const { mutate: createTenantMutate, isPending: isCreateTenantPending } = useMutation({
         mutationKey: ['createTenant'],
         mutationFn: async (data: CreateTenantData) => {
             createTenant(data)
         },
         onSuccess: () => {
-            console.log("Tenant created successfully");
+            messageApi.success("Tenant created successfully")
             queryClient.invalidateQueries({ queryKey: ["getTenants", queryParams] })
+            setDrawerOpen(false)
+            tenantForm.resetFields()
         }
     })
 
-    const { mutate: updateTenantMutate, isPending: updateTenantPending } = useMutation({
+    const { mutate: updateTenantMutate, isPending: isUpdateTenantPending } = useMutation({
         mutationKey: ["updateTenant"],
         mutationFn: async (data: Tenant) => {
             updateTenant(data, currentEditingTenant!.id)
         },
         onSuccess: () => {
+            messageApi.success("Tenant updated successfully")
             queryClient.invalidateQueries({ queryKey: ["getTenants", queryParams] })
+            setDrawerOpen(false)
+            setCurrentEditingTenant(null)
+            tenantForm.resetFields()
+        }
+    })
+
+    const { mutate: deleteTenantMutate } = useMutation({
+        mutationKey: ["deleteTenant"],
+        mutationFn: async (id: number) => {
+            await deleteTenant(id)
+        },
+        onSuccess: async () => {
+            messageApi.success("User deleted successfully")
+            queryClient.invalidateQueries({ queryKey: ["getAllUsers", queryParams] })
         }
     })
 
@@ -85,6 +104,21 @@ const TenantComp = () => {
                     }}
                 >Edit</Button>
         },
+        {
+            title: "Delete",
+            key: "delete",
+            render: (_: string, record: Tenant): JSX.Element =>
+                <Button
+                    type='link'
+                    onClick={() => {
+                        const confirmed = window.confirm("Are you sure you want to delete?");
+                        if (confirmed) {
+                            deleteTenantMutate(record.id)
+                        }
+                    }}
+                ><DeleteOutlined />
+                </Button>
+        },
     ]
 
     const { user } = useAuthStore()
@@ -115,6 +149,7 @@ const TenantComp = () => {
         <>
             {isLoading && <div>Loading....</div>}
             {isError && <div>{error.message}</div>}
+            {contextHolder}
             <Breadcrumb
                 separator={<RightOutlined />}
                 items={[
@@ -183,7 +218,7 @@ const TenantComp = () => {
                         <Button
                             type="primary"
                             onClick={handleSubmit}
-                            loading={createTenantPending || updateTenantPending}>
+                            loading={isCreateTenantPending || isUpdateTenantPending}>
                             {currentEditingTenant ? "Update" : "Submit"}
                         </Button>
                     </Space>

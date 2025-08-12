@@ -1,11 +1,11 @@
 import { Breadcrumb, Button, Drawer, Flex, Form, Image, Space, Spin, Table, Tag, theme, Typography } from "antd"
 import { Link } from "react-router-dom"
-import { LoadingOutlined, PlusOutlined, RightOutlined } from "@ant-design/icons"
+import { DeleteOutlined, LoadingOutlined, PlusOutlined, RightOutlined } from "@ant-design/icons"
 import ProuductsFilter from "./ProuductsFilter"
 import { keepPreviousData, useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
-import { createProduct, getProductsList, updateProductById } from "../../http/api"
+import { createProduct, deleteProduct, getProductsList, updateProductById } from "../../http/api"
 import { type Product, type QueryParams } from "../../types"
-import { useEffect, useMemo, useState } from "react"
+import { useEffect, useMemo, useState, type JSX } from "react"
 import { PER_PAGE } from "../../constants"
 import type { FieldData } from "rc-field-form/lib/interface"
 import { format } from "date-fns"
@@ -60,13 +60,18 @@ const Products = () => {
             attributes: modifiesAttributes,
             tenantId: Number(currentEditingProduct.tenantId)
         })
-
-        console.log("setFields:", {
-            ...currentEditingProduct,
-            priceConfiguration: modifiedPriceConfig,
-            attributes: modifiesAttributes,
-        });
     }
+
+    const { mutate: deleteProductMutate } = useMutation({
+        mutationKey: ["deleteProduct"],
+        mutationFn: async (id: string) => {
+            await deleteProduct(id)
+        },
+        onSuccess: async () => {
+            messageApi.success("Product deleted successfully")
+            queryClient.invalidateQueries({ queryKey: ['getProductsList', queryParams] })
+        }
+    })
 
     useEffect(hanldeEdit, [currentEditingProduct, productForm])
 
@@ -133,7 +138,22 @@ const Products = () => {
                     >Edit</Button>
                 )
             }
-        }
+        },
+        {
+            title: "Delete",
+            key: "delete",
+            render: (_: string, record: Product): JSX.Element =>
+                <Button
+                    type='link'
+                    onClick={() => {
+                        const confirmed = window.confirm("Are you sure you want to delete?");
+                        if (confirmed) {
+                            deleteProductMutate(record._id!.toString())
+                        }
+                    }}
+                ><DeleteOutlined />
+                </Button>
+        },
     ]
 
     interface keyType {

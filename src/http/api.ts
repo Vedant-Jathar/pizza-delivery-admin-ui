@@ -12,10 +12,12 @@ export const self = async () => await api.get(`${AUTH_SERVICE}/auth/self`)
 export const logout = () => api.post(`${AUTH_SERVICE}/auth/logout`)
 export const getAllUsers = (queryString: string) => api.get(`${AUTH_SERVICE}/users?${queryString}`)
 
-export const deleteUser = (id: number) => api.delete(`${AUTH_SERVICE}/users/${id}`)
+export const deleteUser = async (id: number) => await api.delete(`${AUTH_SERVICE}/users/${id}`)
 
 export const getAllTenants = (queryString: string) => api.get(`${AUTH_SERVICE}/tenants?${queryString}`)
 export const getAllTenantsWithoutPagination = () => api.get(`${AUTH_SERVICE}/tenants/all`)
+export const deleteTenant = async (id: number) => await api.delete(`${AUTH_SERVICE}/tenants/${id}`)
+
 
 export const createUser = (createUserData: CreateUserData) => api.post(`${AUTH_SERVICE}/users`, createUserData)
 export const updateUser = (updateUserData: UpdateUserData) => api.patch(`${AUTH_SERVICE}/users/${updateUserData.id}`, updateUserData)
@@ -41,6 +43,8 @@ export const updateProductById = (formData: FormData) => api.put(`${CATALOG_SERV
         "Content-Type": "multipart/formdata"
     }
 })
+
+export const deleteProduct = async (id: string) => await api.delete(`${CATALOG_SERVICE}/products/${id}`)
 
 export const getToppings = async () => await api.get(`${CATALOG_SERVICE}/toppings/all`)
 
