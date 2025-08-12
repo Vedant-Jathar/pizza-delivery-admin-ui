@@ -25,7 +25,7 @@ const ToppingForm = () => {
                     <Space direction="vertical" size={"large"}>
                         <Card title="Topping Info">
                             <Row gutter={20}>
-                                <Col span={12}>
+                                <Col span={24}>
                                     <Form.Item label="Topping name:" name="name" rules={
                                         [
                                             {
@@ -37,10 +37,23 @@ const ToppingForm = () => {
                                     </Form.Item>
                                 </Col>
                             </Row>
+                            <Row gutter={20}>
+                                <Col span={24}>
+                                    <Form.Item label="Price:" name="price" rules={
+                                        [
+                                            {
+                                                required: true,
+                                                message: "Topping Price is required"
+                                            }
+                                        ]}>
+                                        <Input size="large" />
+                                    </Form.Item>
+                                </Col>
+                            </Row>
                         </Card>
                         <Card title="Image Info">
                             <Row gutter={20}>
-                                <Col span={12}>
+                                <Col span={24}>
                                     <ToppingImage imageUri={imageUri} />
                                 </Col>
 
@@ -48,7 +61,7 @@ const ToppingForm = () => {
                         </Card>
                         {user?.role === "admin" && <Card title="Restaurant Info">
                             <Row gutter={20}>
-                                <Col span={12}>
+                                <Col span={24}>
                                     <Form.Item label="" name="tenantId" rules={[
                                         {
                                             required: true,
