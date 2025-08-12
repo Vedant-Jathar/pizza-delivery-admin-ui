@@ -240,7 +240,6 @@ const Products = () => {
             else {
                 return await createProduct(data)
             }
-
         },
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['getProductsList'] })

@@ -35,7 +35,7 @@ const TenantComp = () => {
 
     const queryClient = useQueryClient()
 
-    const { mutate: createTenantMutate } = useMutation({
+    const { mutate: createTenantMutate, isPending: createTenantPending } = useMutation({
         mutationKey: ['createTenant'],
         mutationFn: async (data: CreateTenantData) => {
             createTenant(data)
@@ -46,7 +46,7 @@ const TenantComp = () => {
         }
     })
 
-    const { mutate: updateTenantMutate } = useMutation({
+    const { mutate: updateTenantMutate, isPending: updateTenantPending } = useMutation({
         mutationKey: ["updateTenant"],
         mutationFn: async (data: Tenant) => {
             updateTenant(data, currentEditingTenant!.id)

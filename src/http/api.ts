@@ -12,6 +12,8 @@ export const self = async () => await api.get(`${AUTH_SERVICE}/auth/self`)
 export const logout = () => api.post(`${AUTH_SERVICE}/auth/logout`)
 export const getAllUsers = (queryString: string) => api.get(`${AUTH_SERVICE}/users?${queryString}`)
 
+export const deleteUser = (id: number) => api.delete(`${AUTH_SERVICE}/users/${id}`)
+
 export const getAllTenants = (queryString: string) => api.get(`${AUTH_SERVICE}/tenants?${queryString}`)
 export const getAllTenantsWithoutPagination = () => api.get(`${AUTH_SERVICE}/tenants/all`)
 

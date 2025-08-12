@@ -1,20 +1,22 @@
 import { keepPreviousData, useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { Breadcrumb, Button, Drawer, Flex, Form, Space, Spin, Table, theme, Typography } from "antd"
 import { Link, Navigate } from "react-router-dom"
-import { createUser, getAllUsers, updateUser } from "../../http/api"
+import { createUser, deleteUser, getAllUsers, updateUser } from "../../http/api"
 import type { mappedFields, User } from '../../types'
 import { useAuthStore } from "../../store"
 import UserFilter from "./UserFilter"
 import { useMemo, useState } from "react"
-import { LoadingOutlined, PlusOutlined, RightOutlined } from "@ant-design/icons"
+import { DeleteOutlined, LoadingOutlined, PlusOutlined, RightOutlined } from "@ant-design/icons"
 import UserForm from './forms/UserForm'
 import { PER_PAGE } from "../../constants"
 import type { FieldData } from 'rc-field-form/lib/interface';
 import { debounce } from "lodash"
+import useMessage from "antd/es/message/useMessage"
 
 const UserComp = () => {
-    
+
     const [currentEditingUser, setCurrentEditingUser] = useState<User | null>(null)
+    const [messageApi, contextHolder] = useMessage()
 
     // "useMemo" stores the return value of the function you pass into it.
     const debouncedQUpdate = useMemo(() => {
@@ -37,7 +39,8 @@ const UserComp = () => {
         mutationKey: ['createUser'],
         mutationFn: createUser,
         onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ['getAllUsers'] })
+            messageApi.success("User created successfully")
+            queryClient.invalidateQueries({ queryKey: ["getAllUsers", queryParams] })
         }
     })
 
@@ -45,10 +48,10 @@ const UserComp = () => {
         mutationKey: ["updateUser"],
         mutationFn: updateUser,
         onSuccess: () => {
-            console.log("User updated");
-            queryClient.invalidateQueries({ queryKey: ['getAllUsers'] })
+            messageApi.success("User updated successfully")
+            queryClient.invalidateQueries({ queryKey: ["getAllUsers", queryParams] })
         }
-    }) 
+    })
 
     const handleChange = async () => {
         await form.validateFields()
@@ -88,6 +91,17 @@ const UserComp = () => {
             return getAllUsers(queryString)
         },
         placeholderData: keepPreviousData
+    })
+
+    const { mutate: deleteUserMutate } = useMutation({
+        mutationKey: ["deleteUser"],
+        mutationFn: async (id: number) => {
+            await deleteUser(id)
+        },
+        onSuccess: async () => {
+            messageApi.success("User deleted successfully")
+            queryClient.invalidateQueries({ queryKey: ["getAllUsers", queryParams] })
+        }
     })
 
     const userTableColumns = [
@@ -136,7 +150,18 @@ const UserComp = () => {
                     >Edit</Button>
                 )
             }
-        }
+        },
+        {
+            title: "Delete",
+            align: "center",
+            render: (_: string, record: User) =>
+                <Button
+                    type='link'
+                    onClick={() => {
+                        deleteUserMutate(record.id)
+                    }}
+                ><DeleteOutlined /></Button>
+        },
     ]
 
     const { user } = useAuthStore()
@@ -146,6 +171,7 @@ const UserComp = () => {
 
     return (
         <>
+            {contextHolder}
             <Flex justify="space-between" style={{ marginBottom: "2U0px" }}>
                 <Breadcrumb
                     separator={<RightOutlined />}
