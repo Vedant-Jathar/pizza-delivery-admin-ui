@@ -1,7 +1,7 @@
 import { Breadcrumb, Button, Drawer, Flex, Form, Image, Space, Spin, Table, Tag, theme, Typography } from "antd"
 import { DeleteOutlined, LoadingOutlined, RightOutlined } from "@ant-design/icons"
 
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { keepPreviousData, useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { createTopping, deleteTopping, getToppings, updateToppingById } from '../../http/api'
 import { Link } from 'react-router-dom'
 import type { Topping } from '../../types'
@@ -30,7 +30,8 @@ const ToppingComp = () => {
 
     const { data: toppings, isFetching, isError, error } = useQuery({
         queryKey: ["getToppings"],
-        queryFn: getToppings
+        queryFn: getToppings,
+        placeholderData: keepPreviousData
     })
 
     const toppingTableColumns: ColumnsType<Topping> = [
