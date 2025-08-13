@@ -240,7 +240,7 @@ const ToppingComp = () => {
 
             <Table
                 columns={toppingTableColumns}
-                dataSource={toppings?.data}
+                dataSource={toppings}
                 rowKey={"_id"}
             // pagination={{
             //     current: queryParams.page,
