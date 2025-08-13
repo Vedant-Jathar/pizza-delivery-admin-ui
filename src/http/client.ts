@@ -11,7 +11,7 @@ const api = axios.create({
 })
 
 const refresh = async () => {
-    await axios.post(`http://localhost:8000${AUTH_SERVICE}/auth/refresh`, {}, {
+    await axios.post(`${import.meta.env.VITE_BACKEND_API_URL}${AUTH_SERVICE}/auth/refresh`, {}, {
         withCredentials: true
     })
 }
