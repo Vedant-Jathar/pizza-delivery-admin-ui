@@ -60,7 +60,8 @@ export const updateToppingById = (formData: FormData) => api.patch(`${CATALOG_SE
 
 export const deleteTopping = async (id: string) => await api.delete(`${CATALOG_SERVICE}/toppings/${id}`)
 
-export const getToppings = async () => await api.get(`${CATALOG_SERVICE}/toppings/all`)
+export const getToppings = async (tenantId: number | null) => await api.get(`${CATALOG_SERVICE}/toppings${tenantId ? `?tenantId=${tenantId}` : "/all"}`)
+
 
 // Order Service:
 

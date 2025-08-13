@@ -31,7 +31,16 @@ const ToppingComp = () => {
 
     const { data: toppings, isFetching, isError, error } = useQuery({
         queryKey: ["getToppings"],
-        queryFn: getToppings,
+        queryFn: async () => {
+            const userRole = user?.role
+            let tenantId;
+            if (userRole === "admin") {
+                tenantId = null
+            } else {
+                tenantId = user?.tenant?.id
+            }
+            return await getToppings(tenantId as number | null).then(res => res.data)
+        },
         placeholderData: keepPreviousData
     })
 
