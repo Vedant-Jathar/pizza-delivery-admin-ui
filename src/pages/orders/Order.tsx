@@ -23,7 +23,6 @@ const Order = () => {
 
     const [messageApi, contextHolder] = message.useMessage();
 
-
     const { user } = useAuthStore()
 
     const queryClient = useQueryClient()
@@ -37,11 +36,11 @@ const Order = () => {
                 console.log("socket-on order-update entered");
 
                 if ((data["event-type"] === OrderEvents.ORDER_CREATE && data["message"].paymentMode === PaymentMode.CASH) || (data["event-type"] === OrderEvents.PAYMENT_STATUS_UPDATE && data["message"].paymentStatus === PaymentStatus.PAID)) {
-                    queryClient.invalidateQueries({ queryKey: ["getAllOrders"] });
+                    queryClient.invalidateQueries({ queryKey: ["getAllOrders"], exact: false });
                     messageApi.success("New Order Placed...")
                 }
             })
-
+            
             socket.on("join", (data) => {
                 console.log("User joined in:", data.roomId);
             })
